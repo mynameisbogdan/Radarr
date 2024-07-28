@@ -120,7 +120,7 @@ namespace Radarr.Api.V3.ImportLists
         {
             var newMovies = resource.ToModel();
 
-            return _addMovieService.AddMovies(newMovies, true).ToResource(0);
+            return _addMovieService.AddMovies(newMovies, true).ToResource();
         }
 
         private IEnumerable<ImportListMoviesResource> MapToResource(IEnumerable<Movie> movies, Language language, bool isRecommendation = false, bool isTrending = false, bool isPopular = false)
