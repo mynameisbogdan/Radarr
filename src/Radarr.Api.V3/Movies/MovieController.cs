@@ -132,7 +132,6 @@ namespace Radarr.Api.V3.Movies
             else
             {
                 var movieStats = _movieStatisticsService.MovieStatistics();
-                var availDelay = _configService.AvailabilityDelay;
 
                 var movieTask = Task.Run(() => _moviesService.GetAllMovies());
 
@@ -149,7 +148,7 @@ namespace Radarr.Api.V3.Movies
                 foreach (var movie in movies)
                 {
                     var translation = GetTranslationFromDict(tdict, movie.MovieMetadata, translationLanguage);
-                    moviesResources.Add(movie.ToResource(availDelay, translation, _qualityUpgradableSpecification));
+                    moviesResources.Add(movie.ToResource(translation, _qualityUpgradableSpecification));
                 }
 
                 if (!excludeLocalCovers)
@@ -182,12 +181,11 @@ namespace Radarr.Api.V3.Movies
             }
 
             translationLanguage ??= (Language)_configService.MovieInfoLanguage;
-            var availDelay = _configService.AvailabilityDelay;
 
             var translations = _movieTranslationService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId);
             var translation = GetMovieTranslation(translations, movie.MovieMetadata, translationLanguage);
 
-            var resource = movie.ToResource(availDelay, translation, _qualityUpgradableSpecification);
+            var resource = movie.ToResource(translation, _qualityUpgradableSpecification);
             MapCoversToLocal(resource);
             FetchAndLinkMovieStatistics(resource);
 
