@@ -59,11 +59,10 @@ namespace Radarr.Api.V3.Movies
         [Produces("application/json")]
         public Ok<MovieResource> SearchByTmdbId(int tmdbId)
         {
-            var availDelay = _configService.AvailabilityDelay;
             var result = new Movie { MovieMetadata = _movieInfo.GetMovieInfo(tmdbId).Item1 };
             var translation = result.MovieMetadata.Value.Translations.FirstOrDefault(t => t.Language == (Language)_configService.MovieInfoLanguage);
 
-            return TypedResults.Ok(result.ToResource(availDelay, translation));
+            return TypedResults.Ok(result.ToResource(translation));
         }
 
         [HttpGet("imdb")]
@@ -71,11 +70,9 @@ namespace Radarr.Api.V3.Movies
         public Ok<MovieResource> SearchByImdbId(string imdbId)
         {
             var result = new Movie { MovieMetadata = _movieInfo.GetMovieByImdbId(imdbId) };
-
-            var availDelay = _configService.AvailabilityDelay;
             var translation = result.MovieMetadata.Value.Translations.FirstOrDefault(t => t.Language == (Language)_configService.MovieInfoLanguage);
 
-            return TypedResults.Ok(result.ToResource(availDelay, translation));
+            return TypedResults.Ok(result.ToResource(translation));
         }
 
         [HttpGet]
@@ -90,7 +87,6 @@ namespace Radarr.Api.V3.Movies
         private IEnumerable<MovieResource> MapToResource(IEnumerable<Movie> movies)
         {
             var movieInfoLanguage = (Language)_configService.MovieInfoLanguage;
-            var availDelay = _configService.AvailabilityDelay;
             var namingConfig = _namingService.GetConfig();
 
             var listExclusions = _importListExclusionService.All();
@@ -98,7 +94,7 @@ namespace Radarr.Api.V3.Movies
             foreach (var currentMovie in movies)
             {
                 var translation = currentMovie.MovieMetadata.Value.Translations.FirstOrDefault(t => t.Language == movieInfoLanguage);
-                var resource = currentMovie.ToResource(availDelay, translation);
+                var resource = currentMovie.ToResource(translation);
 
                 _coverMapper.ConvertToLocalUrls(resource.Id, resource.Images);
 
