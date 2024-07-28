@@ -76,13 +76,12 @@ namespace Radarr.Api.V3.Movies
                 return null;
             }
 
-            var availDelay = _configService.AvailabilityDelay;
             var language = (Language)_configService.MovieInfoLanguage;
 
             var translations = _movieTranslationService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId);
             var translation = GetMovieTranslation(translations, movie.MovieMetadata, language);
 
-            var resource = movie.ToResource(availDelay, translation, _upgradableSpecification, _formatCalculator);
+            var resource = movie.ToResource(translation, _upgradableSpecification, _formatCalculator);
             FetchAndLinkMovieStatistics(resource);
 
             _coverMapper.ConvertToLocalUrls(resource.Id, resource.Images);
@@ -93,7 +92,6 @@ namespace Radarr.Api.V3.Movies
         protected List<MovieResource> MapToResource(List<Movie> movies)
         {
             var resources = new List<MovieResource>();
-            var availDelay = _configService.AvailabilityDelay;
             var language = (Language)_configService.MovieInfoLanguage;
 
             foreach (var movie in movies)
@@ -106,7 +104,7 @@ namespace Radarr.Api.V3.Movies
                 var translations = _movieTranslationService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId);
                 var translation = GetMovieTranslation(translations, movie.MovieMetadata, language);
 
-                var resource = movie.ToResource(availDelay, translation, _upgradableSpecification, _formatCalculator);
+                var resource = movie.ToResource(translation, _upgradableSpecification, _formatCalculator);
                 FetchAndLinkMovieStatistics(resource);
 
                 resources.Add(resource);
