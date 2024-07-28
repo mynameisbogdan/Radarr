@@ -52,7 +52,7 @@ namespace Radarr.Api.V3.ManualImport
                 FolderName = model.FolderName,
                 Name = model.Name,
                 Size = model.Size,
-                Movie = model.Movie.ToResource(0),
+                Movie = model.Movie.ToResource(),
                 MovieFileId = model.MovieFileId,
                 ReleaseGroup = model.ReleaseGroup,
                 Quality = model.Quality,
