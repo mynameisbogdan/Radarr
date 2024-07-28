@@ -99,7 +99,7 @@ namespace Radarr.Api.V3.Movies
 
     public static class MovieResourceMapper
     {
-        public static MovieResource ToResource(this Movie model, int availDelay, MovieTranslation movieTranslation = null, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
+        public static MovieResource ToResource(this Movie model, MovieTranslation movieTranslation = null, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
         {
             if (model == null)
             {
@@ -142,7 +142,7 @@ namespace Radarr.Api.V3.Movies
                 Monitored = model.Monitored,
                 MinimumAvailability = model.MinimumAvailability,
 
-                IsAvailable = model.IsAvailable(availDelay),
+                IsAvailable = model.IsAvailable(),
                 FolderName = model.FolderName(),
 
                 Runtime = model.MovieMetadata.Value.Runtime,
@@ -225,9 +225,9 @@ namespace Radarr.Api.V3.Movies
             return movie;
         }
 
-        public static List<MovieResource> ToResource(this IEnumerable<Movie> movies, int availDelay, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
+        public static List<MovieResource> ToResource(this IEnumerable<Movie> movies, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
         {
-            return movies.Select(x => ToResource(x, availDelay, null, upgradableSpecification, formatCalculationService)).ToList();
+            return movies.Select(movie => ToResource(movie, null, upgradableSpecification, formatCalculationService)).ToList();
         }
 
         public static List<Movie> ToModel(this IEnumerable<MovieResource> resources)

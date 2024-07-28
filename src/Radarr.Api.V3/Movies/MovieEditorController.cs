@@ -117,7 +117,6 @@ namespace Radarr.Api.V3.Movies
             }
 
             var configLanguage = (Language)_configService.MovieInfoLanguage;
-            var availabilityDelay = _configService.AvailabilityDelay;
 
             var translations = _movieTranslationService.GetAllTranslationsForLanguage(configLanguage);
             var tdict = translations.ToDictionaryIgnoreDuplicates(x => x.MovieMetadataId);
@@ -129,7 +128,7 @@ namespace Radarr.Api.V3.Movies
             foreach (var movie in updatedMovies)
             {
                 var translation = GetTranslationFromDict(tdict, movie.MovieMetadata, configLanguage);
-                var movieResource = movie.ToResource(availabilityDelay, translation, _upgradableSpecification);
+                var movieResource = movie.ToResource(translation, _upgradableSpecification);
 
                 MapCoversToLocal(movieResource);
 

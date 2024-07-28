@@ -48,7 +48,7 @@ namespace Radarr.Api.V3.Blocklist
                 Indexer = model.Indexer,
                 Message = model.Message,
 
-                Movie = model.Movie.ToResource(0)
+                Movie = model.Movie.ToResource()
             };
         }
     }
