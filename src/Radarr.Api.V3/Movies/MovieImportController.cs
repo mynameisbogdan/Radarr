@@ -37,7 +37,7 @@ namespace Radarr.Api.V3.Movies
         {
             var newMovies = resource.ToModel();
 
-            return TypedResults.Ok(_addMovieService.AddMovies(newMovies).ToResource(0));
+            return TypedResults.Ok(_addMovieService.AddMovies(newMovies).ToResource());
         }
     }
 }
