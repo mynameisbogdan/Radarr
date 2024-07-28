@@ -60,7 +60,7 @@ namespace Radarr.Api.V3.Parse
                 {
                     Title = title,
                     ParsedMovieInfo = remoteMovie.ParsedMovieInfo,
-                    Movie = remoteMovie.Movie.ToResource(_configService.AvailabilityDelay),
+                    Movie = remoteMovie.Movie.ToResource(),
                     Languages = remoteMovie.Languages,
                     CustomFormats = remoteMovie.CustomFormats?.ToResource(false),
                     CustomFormatScore = remoteMovie.CustomFormatScore
