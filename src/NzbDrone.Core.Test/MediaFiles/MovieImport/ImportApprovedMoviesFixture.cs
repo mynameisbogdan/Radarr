@@ -8,7 +8,6 @@ using NUnit.Framework;
 using NzbDrone.Common.Disk;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Download;
-using NzbDrone.Core.History;
 using NzbDrone.Core.MediaFiles;
 using NzbDrone.Core.MediaFiles.Events;
 using NzbDrone.Core.MediaFiles.MovieImport;
@@ -61,10 +60,6 @@ namespace NzbDrone.Core.Test.MediaFiles.MovieImport
             Mocker.GetMock<IUpgradeMediaFiles>()
                   .Setup(s => s.UpgradeMovieFile(It.IsAny<MovieFile>(), It.IsAny<LocalMovie>(), It.IsAny<bool>()))
                   .Returns(new MovieFileMoveResult());
-
-            Mocker.GetMock<IHistoryService>()
-                .Setup(x => x.FindByDownloadId(It.IsAny<string>()))
-                .Returns(new List<MovieHistory>());
 
             _downloadClientItem = Builder<DownloadClientItem>.CreateNew()
                 .With(d => d.OutputPath = new OsPath(outputPath))
