@@ -16,6 +16,7 @@ interface MissingRowProps {
   inCinemas?: string;
   digitalRelease?: string;
   physicalRelease?: string;
+  releaseDate?: string;
   lastSearchTime?: string;
   title: string;
   year: number;
@@ -31,6 +32,7 @@ function MissingRow({
   inCinemas,
   digitalRelease,
   physicalRelease,
+  releaseDate,
   lastSearchTime,
   title,
   year,
@@ -95,6 +97,16 @@ function MissingRow({
             <RelativeDateCell
               key={name}
               date={physicalRelease}
+              timeForToday={false}
+            />
+          );
+        }
+
+        if (name === 'movies.releaseDate') {
+          return (
+            <RelativeDateCell
+              key={name}
+              date={releaseDate}
               timeForToday={false}
             />
           );

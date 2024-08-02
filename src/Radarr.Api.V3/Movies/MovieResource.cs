@@ -124,7 +124,7 @@ namespace Radarr.Api.V3.Movies
                 InCinemas = model.MovieMetadata.Value.InCinemas,
                 PhysicalRelease = model.MovieMetadata.Value.PhysicalRelease,
                 DigitalRelease = model.MovieMetadata.Value.DigitalRelease,
-                ReleaseDate = model.GetReleaseDate(),
+                ReleaseDate = model.ReleaseDate,
 
                 Status = model.MovieMetadata.Value.Status,
                 Overview = translatedOverview,

@@ -249,16 +249,19 @@ namespace NzbDrone.Core.Movies
             return Query(builder);
         }
 
-        public SqlBuilder MoviesWithoutFilesBuilder() => Builder()
+        public SqlBuilder MoviesWithoutFilesBuilder(DateTime currentDate) => Builder()
             .Where<Movie>(x => x.MovieFileId == 0)
             .Where<Movie>(m => m.MovieMetadata.Value.Year > 0)
+            .Where<Movie>(m => m.ReleaseDate <= currentDate)
             .GroupBy<Movie>(m => m.Id)
             .GroupBy<MovieMetadata>(m => m.Id);
 
         public PagingSpec<Movie> MoviesWithoutFiles(PagingSpec<Movie> pagingSpec)
         {
-            pagingSpec.Records = GetPagedRecords(MoviesWithoutFilesBuilder(), pagingSpec, PagedQuery);
-            pagingSpec.TotalRecords = GetPagedRecordCount(MoviesWithoutFilesBuilder().SelectCountDistinct<Movie>(x => x.Id), pagingSpec);
+            var currentDate = DateTime.UtcNow.Date;
+
+            pagingSpec.Records = GetPagedRecords(MoviesWithoutFilesBuilder(currentDate), pagingSpec, PagedQuery);
+            pagingSpec.TotalRecords = GetPagedRecordCount(MoviesWithoutFilesBuilder(currentDate).SelectCountDistinct<Movie>(x => x.Id), pagingSpec);
 
             return pagingSpec;
         }

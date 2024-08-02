@@ -47,6 +47,7 @@ namespace NzbDrone.Core.Movies
         bool MoviePathExists(string folder);
         void RemoveAddOptions(Movie movie);
         bool UpdateTags(Movie movie);
+        bool UpdateReleaseDate(Movie movie);
         bool ExistsByMetadataId(int metadataId);
         HashSet<int> AllMovieWithCollectionsTmdbIds();
     }
@@ -248,6 +249,7 @@ namespace NzbDrone.Core.Movies
             var storedMovie = GetMovie(movie.Id);
 
             UpdateTags(movie);
+            UpdateReleaseDate(movie);
 
             var updatedMovie = _movieRepository.Update(movie);
             _eventAggregator.PublishEvent(new MovieEditedEvent(updatedMovie, storedMovie));
@@ -275,6 +277,7 @@ namespace NzbDrone.Core.Movies
                 }
 
                 UpdateTags(m);
+                UpdateReleaseDate(m);
             }
 
             _movieRepository.UpdateMany(movies);
@@ -333,6 +336,24 @@ namespace NzbDrone.Core.Movies
             }
 
             _logger.Debug("Tags not updated for '{0}'", movie.Title);
+
+            return false;
+        }
+
+        public bool UpdateReleaseDate(Movie movie)
+        {
+            _logger.Trace("Updating release date for {0}", movie);
+
+            var releaseDate = CalculateReleaseDate(movie);
+
+            if (releaseDate?.Date != movie.ReleaseDate?.Date)
+            {
+                movie.ReleaseDate = releaseDate;
+
+                _logger.Debug("Updated release date for '{0}': {1}", movie.Title, releaseDate?.ToString("yyyy-MM-dd") ?? "None");
+
+                return true;
+            }
 
             return false;
         }
@@ -434,6 +455,37 @@ namespace NzbDrone.Core.Movies
             }
 
             throw new MultipleMoviesFoundException(movies, "Expected one movie, but found {0}. Matching movies: {1}", movies.Count, string.Join(",", movies));
+        }
+
+        private static DateTime? CalculateReleaseDate(Movie movie)
+        {
+            var movieMetadata = movie?.MovieMetadata?.Value;
+
+            if (movieMetadata is null)
+            {
+                return null;
+            }
+
+            if (movie.MinimumAvailability is MovieStatusType.TBA or MovieStatusType.Announced)
+            {
+                return new[] { movieMetadata.InCinemas, movieMetadata.DigitalRelease, movieMetadata.PhysicalRelease }
+                    .Where(x => x.HasValue)
+                    .Min();
+            }
+
+            if (movie.MinimumAvailability == MovieStatusType.InCinemas && movieMetadata.InCinemas.HasValue)
+            {
+                return movieMetadata.InCinemas.Value;
+            }
+
+            if (movieMetadata.DigitalRelease.HasValue || movieMetadata.PhysicalRelease.HasValue)
+            {
+                return new[] { movieMetadata.DigitalRelease, movieMetadata.PhysicalRelease }
+                    .Where(x => x.HasValue)
+                    .Min();
+            }
+
+            return movieMetadata.InCinemas?.AddDays(90);
         }
 
         public void Handle(MovieFileAddedEvent message)

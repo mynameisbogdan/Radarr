@@ -59,6 +59,12 @@ export const defaultState = {
         isVisible: false
       },
       {
+        name: 'movies.releaseDate',
+        label: () => translate('ReleaseDate'),
+        isSortable: true,
+        isVisible: true
+      },
+      {
         name: 'movies.lastSearchTime',
         label: () => translate('LastSearched'),
         isSortable: true,

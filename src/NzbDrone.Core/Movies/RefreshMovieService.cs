@@ -206,7 +206,7 @@ namespace NzbDrone.Core.Movies
             }
         }
 
-        private void UpdateTags(Movie movie, bool isNew)
+        private void UpdateIfChanged(Movie movie, bool isNew)
         {
             if (isNew)
             {
@@ -215,8 +215,9 @@ namespace NzbDrone.Core.Movies
             }
 
             var tagsUpdated = _movieService.UpdateTags(movie);
+            var releaseDateUpdated = _movieService.UpdateReleaseDate(movie);
 
-            if (tagsUpdated)
+            if (tagsUpdated || releaseDateUpdated)
             {
                 _movieService.UpdateMovie(movie);
             }
@@ -237,7 +238,7 @@ namespace NzbDrone.Core.Movies
                     try
                     {
                         movie = RefreshMovieInfo(movieId);
-                        UpdateTags(movie, isNew);
+                        UpdateIfChanged(movie, isNew);
                         RescanMovie(movie, isNew, trigger);
                     }
                     catch (MovieNotFoundException)
@@ -247,7 +248,7 @@ namespace NzbDrone.Core.Movies
                     catch (Exception e)
                     {
                         _logger.Error(e, "Couldn't refresh info for {0}", movie);
-                        UpdateTags(movie, isNew);
+                        UpdateIfChanged(movie, isNew);
                         RescanMovie(movie, isNew, trigger);
                         throw;
                     }
@@ -284,13 +285,13 @@ namespace NzbDrone.Core.Movies
                             _logger.Error(e, "Couldn't refresh info for {0}", movieLocal);
                         }
 
-                        UpdateTags(movie, false);
+                        UpdateIfChanged(movie, false);
                         RescanMovie(movieLocal, false, trigger);
                     }
                     else
                     {
                         _logger.Debug("Skipping refresh of movie: {0}", movieLocal.Title);
-                        UpdateTags(movie, false);
+                        UpdateIfChanged(movie, false);
                         RescanMovie(movieLocal, false, trigger);
                     }
                 }
