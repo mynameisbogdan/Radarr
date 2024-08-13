@@ -17,6 +17,14 @@ namespace NzbDrone.Core.Indexers
                 .When(c => c.SeedTime.HasValue)
                 .AsWarning().WithMessage("Should be greater than zero");
 
+            RuleFor(c => c.DownloadSpeedLimit).GreaterThan(0)
+                .When(c => c.DownloadSpeedLimit.HasValue)
+                .AsWarning().WithMessage("Should be greater than zero");
+
+            RuleFor(c => c.UploadSpeedLimit).GreaterThan(0)
+                .When(c => c.UploadSpeedLimit.HasValue)
+                .AsWarning().WithMessage("Should be greater than zero");
+
             if (seedRatioMinimum != 0.0)
             {
                 RuleFor(c => c.SeedRatio).GreaterThanOrEqualTo(seedRatioMinimum)
@@ -42,5 +50,11 @@ namespace NzbDrone.Core.Indexers
 
         [FieldDefinition(1, Type = FieldType.Number, Label = "IndexerSettingsSeedTime", Unit = "minutes", HelpText = "IndexerSettingsSeedTimeHelpText", Advanced = true)]
         public int? SeedTime { get; set; }
+
+        [FieldDefinition(2, Type = FieldType.Number, Label = "IndexerSettingsDownloadSpeedLimit", Unit = "MB", HelpText = "IndexerSettingsDownloadSpeedLimitHelpText", Advanced = true)]
+        public double? DownloadSpeedLimit { get; set; }
+
+        [FieldDefinition(3, Type = FieldType.Number, Label = "IndexerSettingsUploadSpeedLimit", Unit = "MB", HelpText = "IndexerSettingsUploadSpeedLimitHelpText", Advanced = true)]
+        public double? UploadSpeedLimit { get; set; }
     }
 }
