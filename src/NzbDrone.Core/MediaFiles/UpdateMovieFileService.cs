@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using NLog;
 using NzbDrone.Common.Disk;
+using NzbDrone.Common.EnvironmentInfo;
+using NzbDrone.Common.Extensions;
 using NzbDrone.Common.Instrumentation.Extensions;
 using NzbDrone.Core.Configuration;
 using NzbDrone.Core.MediaFiles.Events;
@@ -48,50 +50,45 @@ namespace NzbDrone.Core.MediaFiles
             switch (_configService.FileDate)
             {
                 case FileDateType.Release:
-                    {
-                        var releaseDate = movie.MovieMetadata.Value.PhysicalRelease ?? movie.MovieMetadata.Value.DigitalRelease;
+                    var releaseDate = movie.MovieMetadata.Value.PhysicalRelease ?? movie.MovieMetadata.Value.DigitalRelease;
 
-                        if (releaseDate.HasValue == false)
-                        {
-                            return false;
-                        }
-
-                        return ChangeFileDate(movieFilePath, releaseDate.Value);
-                    }
+                    return releaseDate.HasValue && ChangeFileDateToLocalDate(movieFilePath, releaseDate.Value.ToLocalTime());
 
                 case FileDateType.Cinemas:
-                    {
-                        var airDate = movie.MovieMetadata.Value.InCinemas;
+                    var inCinemas = movie.MovieMetadata.Value.InCinemas;
 
-                        if (airDate.HasValue == false)
-                        {
-                            return false;
-                        }
-
-                        return ChangeFileDate(movieFilePath, airDate.Value);
-                    }
+                    return inCinemas.HasValue && ChangeFileDateToLocalDate(movieFilePath, inCinemas.Value.ToLocalTime());
             }
 
             return false;
         }
 
-        private bool ChangeFileDate(string filePath, DateTime date)
+        private bool ChangeFileDateToLocalDate(string filePath, DateTime localDate)
         {
-            if (DateTime.TryParse(_diskProvider.FileGetLastWrite(filePath).ToLongDateString(), out var oldDateTime))
-            {
-                if (!DateTime.Equals(date, oldDateTime))
-                {
-                    try
-                    {
-                        _diskProvider.FileSetLastWriteTime(filePath, date);
-                        _logger.Debug("Date of file [{0}] changed from '{1}' to '{2}'", filePath, oldDateTime, date);
+            // FileGetLastWrite returns UTC; convert to local to compare
+            var oldLastWrite = _diskProvider.FileGetLastWrite(filePath).ToLocalTime();
 
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Warn(ex, "Unable to set date of file [" + filePath + "]");
-                    }
+            if (OsInfo.IsNotWindows && localDate.ToUniversalTime() < DateTimeExtensions.EpochTime)
+            {
+                _logger.Debug("Setting date of file to 1970-01-01 as actual release date is before that time and will not be set properly");
+                localDate = DateTimeExtensions.EpochTime.ToLocalTime();
+            }
+
+            if (!DateTime.Equals(localDate.WithoutTicks(), oldLastWrite.WithoutTicks()))
+            {
+                try
+                {
+                    // Preserve prior mtime subseconds per https://github.com/Sonarr/Sonarr/issues/7228
+                    var mtime = localDate.WithTicksFrom(oldLastWrite);
+
+                    _diskProvider.FileSetLastWriteTime(filePath, mtime);
+                    _logger.Debug("Date of file [{0}] changed from '{1}' to '{2}'", filePath, oldLastWrite, mtime);
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warn(ex, "Unable to set date of file [" + filePath + "]");
                 }
             }
 
