@@ -12,10 +12,13 @@ interface CssExports {
   'interactiveIcon': string;
   'languages': string;
   'manualDownloadContent': string;
+  'negativeScore': string;
   'peers': string;
+  'positiveScore': string;
   'protocol': string;
   'quality': string;
   'rejected': string;
+  'row': string;
   'size': string;
   'titleContent': string;
 }
