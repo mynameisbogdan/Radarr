@@ -41,7 +41,7 @@ namespace NzbDrone.Core.Movies
 
             if (addOptions.SearchForMovie)
             {
-                _commandQueueManager.Push(new MoviesSearchCommand { MovieIds = new List<int> { movie.Id } });
+                _commandQueueManager.Push(new MoviesSearchCommand { MovieIds = new List<int> { movie.Id } }, trigger: addOptions.AddMethod == AddMovieMethod.Manual ? CommandTrigger.Manual : CommandTrigger.Unspecified);
             }
 
             if (addOptions.Monitor == MonitorTypes.MovieAndCollection && movie.MovieMetadata.Value.CollectionTmdbId > 0)
