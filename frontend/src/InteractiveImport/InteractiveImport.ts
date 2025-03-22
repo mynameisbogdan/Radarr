@@ -9,6 +9,7 @@ export interface InteractiveImportCommandOptions {
   path: string;
   folderName: string;
   movieId: number;
+  edition?: string;
   releaseGroup?: string;
   quality: QualityModel;
   languages: Language[];
@@ -23,6 +24,7 @@ interface InteractiveImport extends ModelBase {
   folderName: string;
   name: string;
   size: number;
+  edition: string;
   releaseGroup: string;
   quality: QualityModel;
   languages: Language[];

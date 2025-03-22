@@ -8,6 +8,7 @@ import Column from 'Components/Table/Column';
 import TableRow from 'Components/Table/TableRow';
 import Popover from 'Components/Tooltip/Popover';
 import { icons, kinds, tooltipPositions } from 'Helpers/Props';
+import SelectEditionModal from 'InteractiveImport/Edition/SelectEditionModal';
 import SelectIndexerFlagsModal from 'InteractiveImport/IndexerFlags/SelectIndexerFlagsModal';
 import SelectLanguageModal from 'InteractiveImport/Language/SelectLanguageModal';
 import SelectMovieModal from 'InteractiveImport/Movie/SelectMovieModal';
@@ -35,6 +36,7 @@ import styles from './InteractiveImportRow.css';
 
 type SelectType =
   | 'movie'
+  | 'edition'
   | 'releaseGroup'
   | 'quality'
   | 'language'
@@ -49,6 +51,7 @@ interface InteractiveImportRowProps {
   allowMovieChange: boolean;
   relativePath: string;
   movie?: Movie;
+  edition?: string;
   releaseGroup?: string;
   quality?: QualityModel;
   languages?: Language[];
@@ -74,6 +77,7 @@ function InteractiveImportRow(props: InteractiveImportRowProps) {
     movie,
     quality,
     languages,
+    edition,
     releaseGroup,
     size,
     customFormats,
@@ -92,6 +96,10 @@ function InteractiveImportRow(props: InteractiveImportRowProps) {
 
   const isMovieColumnVisible = useMemo(
     () => columns.find((c) => c.name === 'movie')?.isVisible ?? false,
+    [columns]
+  );
+  const isEditionColumnVisible = useMemo(
+    () => columns.find((c) => c.name === 'edition')?.isVisible ?? false,
     [columns]
   );
   const isIndexerFlagsColumnVisible = useMemo(
@@ -163,6 +171,28 @@ function InteractiveImportRow(props: InteractiveImportRowProps) {
         updateInteractiveImportItem({
           id,
           movie,
+        })
+      );
+
+      dispatch(reprocessInteractiveImportItems({ ids: [id] }));
+
+      setSelectModalOpen(null);
+      selectRowAfterChange();
+    },
+    [id, dispatch, setSelectModalOpen, selectRowAfterChange]
+  );
+
+  const onSelectEditionPress = useCallback(() => {
+    setSelectModalOpen('edition');
+  }, [setSelectModalOpen]);
+
+  const onEditionSelect = useCallback(
+    (edition: string) => {
+      console.warn({ edition });
+      dispatch(
+        updateInteractiveImportItem({
+          id,
+          edition,
         })
       );
 
@@ -261,6 +291,7 @@ function InteractiveImportRow(props: InteractiveImportRowProps) {
   const movieTitle = movie ? movie.title : '';
 
   const showMoviePlaceholder = isSelected && !movie;
+  const showEditionPlaceholder = isSelected && !edition;
   const showReleaseGroupPlaceholder = isSelected && !releaseGroup;
   const showQualityPlaceholder = isSelected && !quality;
   const showLanguagePlaceholder = isSelected && !languages;
@@ -288,6 +319,19 @@ function InteractiveImportRow(props: InteractiveImportRowProps) {
             <InteractiveImportRowCellPlaceholder />
           ) : (
             movieTitle
+          )}
+        </TableRowCellButton>
+      ) : null}
+
+      {isEditionColumnVisible ? (
+        <TableRowCellButton
+          title={translate('ClickToChangeEdition')}
+          onPress={onSelectEditionPress}
+        >
+          {showEditionPlaceholder ? (
+            <InteractiveImportRowCellPlaceholder isOptional={true} />
+          ) : (
+            edition
           )}
         </TableRowCellButton>
       ) : null}
@@ -391,6 +435,14 @@ function InteractiveImportRow(props: InteractiveImportRowProps) {
         isOpen={selectModalOpen === 'movie'}
         modalTitle={modalTitle}
         onMovieSelect={onMovieSelect}
+        onModalClose={onSelectModalClose}
+      />
+
+      <SelectEditionModal
+        isOpen={selectModalOpen === 'edition'}
+        edition={edition ?? ''}
+        modalTitle={modalTitle}
+        onEditionSelect={onEditionSelect}
         onModalClose={onSelectModalClose}
       />
 

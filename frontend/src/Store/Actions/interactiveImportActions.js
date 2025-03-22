@@ -167,6 +167,7 @@ export const actionHandlers = handleThunks({
         movieId: item.movie ? item.movie.id : undefined,
         quality: item.quality,
         languages: item.languages,
+        edition: item.edition,
         releaseGroup: item.releaseGroup,
         indexerFlags: item.indexerFlags,
         downloadId: item.downloadId

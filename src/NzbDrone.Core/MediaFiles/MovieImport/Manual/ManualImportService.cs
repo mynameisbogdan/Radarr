@@ -24,7 +24,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
     {
         List<ManualImportItem> GetMediaFiles(int movieId);
         List<ManualImportItem> GetMediaFiles(string path, string downloadId, int? movieId, bool filterExistingFiles);
-        ManualImportItem ReprocessItem(string path, string downloadId, int movieId, string releaseGroup, QualityModel quality, List<Language> languages, int indexerFlags);
+        ManualImportItem ReprocessItem(string path, string downloadId, int movieId, string edition, string releaseGroup, QualityModel quality, List<Language> languages, int indexerFlags);
     }
 
     public class ManualImportService : IExecute<ManualImportCommand>, IManualImportService
@@ -91,6 +91,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
                     RelativePath = movie.Path.GetRelativePath(file),
                     Name = Path.GetFileNameWithoutExtension(file),
                     Movie = movie,
+                    Edition = string.Empty,
                     ReleaseGroup = string.Empty,
                     Quality = new QualityModel(Quality.Unknown),
                     Languages = new List<Language> { Language.Unknown },
@@ -129,7 +130,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
             return ProcessFolder(path, path, downloadId, movieId, filterExistingFiles);
         }
 
-        public ManualImportItem ReprocessItem(string path, string downloadId, int movieId, string releaseGroup, QualityModel quality, List<Language> languages, int indexerFlags)
+        public ManualImportItem ReprocessItem(string path, string downloadId, int movieId, string edition, string releaseGroup, QualityModel quality, List<Language> languages, int indexerFlags)
         {
             var rootFolder = Path.GetDirectoryName(path);
             var movie = _movieService.GetMovie(movieId);
@@ -143,6 +144,9 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
             }
 
             var downloadClientItem = GetTrackedDownload(downloadId)?.DownloadItem;
+            var finalEdition = releaseGroup.IsNullOrWhiteSpace()
+                ? Parser.Parser.ParseEdition(path)
+                : edition;
             var finalReleaseGroup = releaseGroup.IsNullOrWhiteSpace()
                 ? Parser.Parser.ParseReleaseGroup(path)
                 : releaseGroup;
@@ -161,6 +165,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
             localMovie.SceneSource = SceneSource(movie, rootFolder);
             localMovie.ExistingFile = movie.Path.IsParentPath(path);
             localMovie.Size = _diskProvider.GetFileSize(path);
+            localMovie.Edition = finalEdition;
             localMovie.ReleaseGroup = finalReleaseGroup;
             localMovie.Languages = finalLanguages;
             localMovie.Quality = finalQuality;
@@ -174,6 +179,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
 
             // Reapply the user-chosen values.
             localMovie.Movie = movie;
+            localMovie.Edition = finalEdition;
             localMovie.ReleaseGroup = finalReleaseGroup;
             localMovie.Quality = finalQuality;
             localMovie.Languages = finalLanguages;
@@ -282,6 +288,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
                 {
                     var localMovie = new LocalMovie();
                     localMovie.Path = file;
+                    localMovie.Edition = Parser.Parser.ParseEdition(file);
                     localMovie.ReleaseGroup = Parser.Parser.ParseReleaseGroup(file);
                     localMovie.Quality = QualityParser.ParseQuality(file);
                     localMovie.Languages = LanguageParser.ParseLanguages(file);
@@ -327,6 +334,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
                 localMovie.Path = file;
                 localMovie.Quality = new QualityModel(Quality.Unknown);
                 localMovie.Languages = new List<Language> { Language.Unknown };
+                localMovie.Edition = Parser.Parser.ParseEdition(file);
                 localMovie.ReleaseGroup = Parser.Parser.ParseReleaseGroup(file);
                 localMovie.Size = _diskProvider.GetFileSize(file);
 
@@ -366,6 +374,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
             item.Quality = decision.LocalMovie.Quality;
             item.Size = _diskProvider.GetFileSize(decision.LocalMovie.Path);
             item.Languages = decision.LocalMovie.Languages;
+            item.Edition = decision.LocalMovie.Edition;
             item.ReleaseGroup = decision.LocalMovie.ReleaseGroup;
             item.Rejections = decision.Rejections;
             item.IndexerFlags = (int)decision.LocalMovie.IndexerFlags;
@@ -390,6 +399,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
             item.RelativePath = movieFile.RelativePath;
             item.Name = Path.GetFileNameWithoutExtension(movieFile.Path);
             item.Movie = movie;
+            item.Edition = movieFile.Edition;
             item.ReleaseGroup = movieFile.ReleaseGroup;
             item.Quality = movieFile.Quality;
             item.Languages = movieFile.Languages;
@@ -424,6 +434,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
                     ExistingFile = existingFile,
                     FileMovieInfo = fileMovieInfo,
                     Path = file.Path,
+                    Edition = file.Edition,
                     ReleaseGroup = file.ReleaseGroup,
                     Quality = file.Quality,
                     Languages = file.Languages,
@@ -450,6 +461,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Manual
 
                 // Apply the user-chosen values.
                 localMovie.Movie = movie;
+                localMovie.Edition = file.Edition;
                 localMovie.ReleaseGroup = file.ReleaseGroup;
                 localMovie.Quality = file.Quality;
                 localMovie.Languages = file.Languages;

@@ -39,7 +39,7 @@ namespace Radarr.Api.V3.ManualImport
         {
             foreach (var item in items)
             {
-                var processedItem = _manualImportService.ReprocessItem(item.Path, item.DownloadId, item.MovieId, item.ReleaseGroup, item.Quality, item.Languages, item.IndexerFlags);
+                var processedItem = _manualImportService.ReprocessItem(item.Path, item.DownloadId, item.MovieId, item.Edition, item.ReleaseGroup, item.Quality, item.Languages, item.IndexerFlags);
 
                 item.Movie = processedItem.Movie.ToResource(0);
                 item.IndexerFlags = processedItem.IndexerFlags;
@@ -56,6 +56,11 @@ namespace Radarr.Api.V3.ManualImport
                 if (item.Quality?.Quality == Quality.Unknown)
                 {
                     item.Quality = processedItem.Quality;
+                }
+
+                if (item.Edition.IsNullOrWhiteSpace())
+                {
+                    item.Edition = processedItem.Edition;
                 }
 
                 if (item.ReleaseGroup.IsNullOrWhiteSpace())

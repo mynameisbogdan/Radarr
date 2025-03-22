@@ -25,6 +25,7 @@ import TableBody from 'Components/Table/TableBody';
 import usePrevious from 'Helpers/Hooks/usePrevious';
 import useSelectState from 'Helpers/Hooks/useSelectState';
 import { align, icons, kinds, scrollDirections } from 'Helpers/Props';
+import SelectEditionModal from 'InteractiveImport/Edition/SelectEditionModal';
 import ImportMode from 'InteractiveImport/ImportMode';
 import SelectIndexerFlagsModal from 'InteractiveImport/IndexerFlags/SelectIndexerFlagsModal';
 import InteractiveImport, {
@@ -63,6 +64,7 @@ import styles from './InteractiveImportModalContent.css';
 type SelectType =
   | 'select'
   | 'movie'
+  | 'edition'
   | 'releaseGroup'
   | 'quality'
   | 'language'
@@ -86,6 +88,11 @@ const COLUMNS = [
     name: 'movie',
     label: () => translate('Movie'),
     isSortable: true,
+    isVisible: true,
+  },
+  {
+    name: 'edition',
+    label: () => translate('Edition'),
     isVisible: true,
   },
   {
@@ -271,6 +278,16 @@ function InteractiveImportModalContent(
       }
     }
 
+    const showEdition = items.some((item) => item.edition);
+
+    if (!showEdition) {
+      const editionColumn = result.find((c) => c.name === 'edition');
+
+      if (editionColumn) {
+        editionColumn.isVisible = false;
+      }
+    }
+
     const showIndexerFlags = items.some((item) => item.indexerFlags);
 
     if (!showIndexerFlags) {
@@ -298,6 +315,10 @@ function InteractiveImportModalContent(
       {
         key: 'quality',
         value: translate('SelectQuality'),
+      },
+      {
+        key: 'edition',
+        value: translate('SelectEdition'),
       },
       {
         key: 'releaseGroup',
@@ -445,6 +466,7 @@ function InteractiveImportModalContent(
       if (isSelected) {
         const {
           movie,
+          edition,
           releaseGroup,
           quality,
           languages,
@@ -481,6 +503,7 @@ function InteractiveImportModalContent(
           if (isSameMovieFile(item, originalItem)) {
             existingFiles.push({
               id: movieFileId,
+              edition,
               releaseGroup,
               quality,
               languages,
@@ -495,6 +518,7 @@ function InteractiveImportModalContent(
           path: item.path,
           folderName: item.folderName,
           movieId: movie.id,
+          edition,
           releaseGroup,
           quality,
           languages,
@@ -606,6 +630,22 @@ function InteractiveImportModalContent(
       setSelectModalOpen(null);
     },
     [selectedIds, setSelectModalOpen, dispatch]
+  );
+
+  const onEditionSelect = useCallback(
+    (edition: string) => {
+      dispatch(
+        updateInteractiveImportItems({
+          ids: selectedIds,
+          edition,
+        })
+      );
+
+      dispatch(reprocessInteractiveImportItems({ ids: selectedIds }));
+
+      setSelectModalOpen(null);
+    },
+    [selectedIds, dispatch]
   );
 
   const onReleaseGroupSelect = useCallback(
@@ -817,6 +857,14 @@ function InteractiveImportModalContent(
         isOpen={selectModalOpen === 'movie'}
         modalTitle={modalTitle}
         onMovieSelect={onMovieSelect}
+        onModalClose={onSelectModalClose}
+      />
+
+      <SelectEditionModal
+        isOpen={selectModalOpen === 'edition'}
+        edition=""
+        modalTitle={modalTitle}
+        onEditionSelect={onEditionSelect}
         onModalClose={onSelectModalClose}
       />
 
