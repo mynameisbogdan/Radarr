@@ -5,6 +5,8 @@ interface CssExports {
   'added': string;
   'certification': string;
   'collection': string;
+  'customFormatScore': string;
+  'customFormats': string;
   'digitalRelease': string;
   'genres': string;
   'imdbRating': string;

@@ -1,5 +1,7 @@
+import React from 'react';
 import { createAction } from 'redux-actions';
-import { filterBuilderTypes, filterBuilderValueTypes, sortDirections } from 'Helpers/Props';
+import Icon from 'Components/Icon';
+import { filterBuilderTypes, filterBuilderValueTypes, icons, sortDirections } from 'Helpers/Props';
 import sortByProp from 'Utilities/Array/sortByProp';
 import translate from 'Utilities/String/translate';
 import createHandleActions from './Creators/createHandleActions';
@@ -236,6 +238,22 @@ export const defaultState = {
       isVisible: false
     },
     {
+      name: 'customFormats',
+      label: () => translate('Formats'),
+      isSortable: false,
+      isVisible: true
+    },
+    {
+      name: 'customFormatScore',
+      columnLabel: () => translate( 'CustomFormatScore'),
+      label: React.createElement(Icon, {
+        name: icons.SCORE,
+        title: () => translate( 'CustomFormatScore')
+      }),
+      isSortable: true,
+      isVisible: true
+    },
+    {
       name: 'tags',
       label: () => translate('Tags'),
       isSortable: true,
@@ -295,6 +313,10 @@ export const defaultState = {
 
     traktRating: function({ ratings = {} }) {
       return ratings.trakt ? ratings.trakt.value : 0;
+    },
+
+    customFormatScore: function({ movieFile = {} }) {
+      return movieFile.customFormatScore || 0;
     }
   },
 

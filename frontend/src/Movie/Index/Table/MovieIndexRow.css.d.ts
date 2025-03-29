@@ -7,6 +7,8 @@ interface CssExports {
   'certification': string;
   'checkInput': string;
   'collection': string;
+  'customFormatScore': string;
+  'customFormats': string;
   'digitalRelease': string;
   'externalLinks': string;
   'genres': string;

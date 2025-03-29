@@ -37,7 +37,8 @@
 .digitalRelease,
 .releaseDate,
 .genres,
-.keywords {
+.keywords,
+.customFormats {
   composes: headerCell from '~Components/Table/VirtualTableHeaderCell.css';
 
   flex: 0 0 180px;
@@ -84,7 +85,8 @@
 .imdbRating,
 .tmdbRating,
 .rottenTomatoesRating,
-.traktRating {
+.traktRating,
+.customFormatScore {
   composes: headerCell from '~Components/Table/VirtualTableHeaderCell.css';
 
   flex: 0 0 80px;

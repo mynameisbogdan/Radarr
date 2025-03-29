@@ -15,19 +15,22 @@ import Column from 'Components/Table/Column';
 import TmdbRating from 'Components/TmdbRating';
 import Tooltip from 'Components/Tooltip/Tooltip';
 import TraktRating from 'Components/TraktRating';
-import { icons, kinds } from 'Helpers/Props';
+import { icons, kinds, tooltipPositions } from 'Helpers/Props';
 import DeleteMovieModal from 'Movie/Delete/DeleteMovieModal';
 import MovieDetailsLinks from 'Movie/Details/MovieDetailsLinks';
 import EditMovieModal from 'Movie/Edit/EditMovieModal';
 import createMovieIndexItemSelector from 'Movie/Index/createMovieIndexItemSelector';
 import { Statistics } from 'Movie/Movie';
+import MovieFormats from 'Movie/MovieFormats';
 import MoviePopularityIndex from 'Movie/MoviePopularityIndex';
 import MovieTitleLink from 'Movie/MovieTitleLink';
+import { MovieFile } from 'MovieFile/MovieFile';
 import { executeCommand } from 'Store/Actions/commandActions';
 import createUISettingsSelector from 'Store/Selectors/createUISettingsSelector';
 import { SelectStateInputProps } from 'typings/props';
 import formatRuntime from 'Utilities/Date/formatRuntime';
 import formatBytes from 'Utilities/Number/formatBytes';
+import formatCustomFormatScore from 'Utilities/Number/formatCustomFormatScore';
 import firstCharToUpper from 'Utilities/String/firstCharToUpper';
 import translate from 'Utilities/String/translate';
 import MovieIndexProgressBar from '../ProgressBar/MovieIndexProgressBar';
@@ -81,7 +84,7 @@ function MovieIndexRow(props: MovieIndexRowProps) {
     imdbId,
     isAvailable,
     hasFile,
-    movieFile,
+    movieFile = {} as MovieFile,
     youTubeTrailerId,
     isSaving = false,
   } = movie;
@@ -139,6 +142,8 @@ function MovieIndexRow(props: MovieIndexRowProps) {
     },
     [selectDispatch]
   );
+
+  const { customFormats = [], customFormatScore } = movieFile;
 
   return (
     <>
@@ -433,6 +438,29 @@ function MovieIndexRow(props: MovieIndexRowProps) {
           return (
             <VirtualTableRowCell key={name} className={styles[name]}>
               <span title={joinedReleaseGroups}>{truncatedReleaseGroups}</span>
+            </VirtualTableRowCell>
+          );
+        }
+
+        if (name === 'customFormats') {
+          return (
+            <VirtualTableRowCell key={name} className={styles[name]}>
+              <MovieFormats formats={customFormats} />
+            </VirtualTableRowCell>
+          );
+        }
+
+        if (name === 'customFormatScore') {
+          return (
+            <VirtualTableRowCell key={name} className={styles[name]}>
+              <Tooltip
+                anchor={formatCustomFormatScore(
+                  customFormatScore,
+                  customFormats.length
+                )}
+                tooltip={<MovieFormats formats={customFormats} />}
+                position={tooltipPositions.BOTTOM}
+              />
             </VirtualTableRowCell>
           );
         }

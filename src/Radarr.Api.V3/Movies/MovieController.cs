@@ -7,6 +7,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Configuration;
+using NzbDrone.Core.CustomFormats;
 using NzbDrone.Core.Datastore.Events;
 using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.Languages;
@@ -46,6 +47,7 @@ namespace Radarr.Api.V3.Movies
         private readonly IManageCommandQueue _commandQueueManager;
         private readonly IRootFolderService _rootFolderService;
         private readonly IUpgradableSpecification _qualityUpgradableSpecification;
+        private readonly ICustomFormatCalculationService _formatService;
         private readonly IConfigService _configService;
 
         public MovieController(IBroadcastSignalRMessage signalRBroadcaster,
@@ -57,6 +59,7 @@ namespace Radarr.Api.V3.Movies
                            IManageCommandQueue commandQueueManager,
                            IRootFolderService rootFolderService,
                            IUpgradableSpecification qualityUpgradableSpecification,
+                           ICustomFormatCalculationService formatService,
                            IConfigService configService,
                            RootFolderValidator rootFolderValidator,
                            MappedNetworkDriveValidator mappedNetworkDriveValidator,
@@ -75,6 +78,7 @@ namespace Radarr.Api.V3.Movies
             _addMovieService = addMovieService;
             _movieStatisticsService = movieStatisticsService;
             _qualityUpgradableSpecification = qualityUpgradableSpecification;
+            _formatService = formatService;
             _configService = configService;
             _coverMapper = coverMapper;
             _commandQueueManager = commandQueueManager;
@@ -150,7 +154,7 @@ namespace Radarr.Api.V3.Movies
                 foreach (var movie in movies)
                 {
                     var translation = GetTranslationFromDict(tdict, movie.MovieMetadata, translationLanguage);
-                    moviesResources.Add(movie.ToResource(translation, _qualityUpgradableSpecification));
+                    moviesResources.Add(movie.ToResource(translation, _qualityUpgradableSpecification, _formatService));
                 }
 
                 if (!excludeLocalCovers)
@@ -189,7 +193,7 @@ namespace Radarr.Api.V3.Movies
             var translations = _movieTranslationService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId);
             var translation = GetMovieTranslation(translations, movie.MovieMetadata, translationLanguage);
 
-            var resource = movie.ToResource(translation, _qualityUpgradableSpecification);
+            var resource = movie.ToResource(translation, _qualityUpgradableSpecification, _formatService);
             MapCoversToLocal(resource);
             FetchAndLinkMovieStatistics(resource);
 
