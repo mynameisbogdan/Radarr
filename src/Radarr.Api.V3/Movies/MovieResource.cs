@@ -9,6 +9,7 @@ using NzbDrone.Core.Languages;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.Movies;
 using NzbDrone.Core.Movies.Translations;
+using NzbDrone.Core.Profiles.Qualities;
 using Radarr.Api.V3.MovieFiles;
 using Radarr.Http.REST;
 using Swashbuckle.AspNetCore.Annotations;
@@ -99,7 +100,7 @@ namespace Radarr.Api.V3.Movies
 
     public static class MovieResourceMapper
     {
-        public static MovieResource ToResource(this Movie model, int availDelay, MovieTranslation movieTranslation = null, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
+        public static MovieResource ToResource(this Movie model, int availDelay, MovieTranslation movieTranslation = null, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null, QualityProfile qualityProfile = null)
         {
             if (model == null)
             {
@@ -107,6 +108,13 @@ namespace Radarr.Api.V3.Movies
             }
 
             var movieFile = model.MovieFile?.ToResource(model, upgradableSpecification, formatCalculationService);
+
+            if (qualityProfile is not null && movieFile is not null)
+            {
+                movieFile.Quality.QualityWeight = qualityProfile.GetIndex(movieFile.Quality.Quality).Index;
+                movieFile.Quality.QualityWeight += movieFile.Quality.Revision.Real * 10;
+                movieFile.Quality.QualityWeight += movieFile.Quality.Revision.Version;
+            }
 
             var translatedTitle = movieTranslation?.Title ?? model.Title;
             var translatedOverview = movieTranslation?.Overview ?? model.MovieMetadata.Value.Overview;
@@ -225,9 +233,9 @@ namespace Radarr.Api.V3.Movies
             return movie;
         }
 
-        public static List<MovieResource> ToResource(this IEnumerable<Movie> movies, int availDelay, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
+        public static List<MovieResource> ToResource(this IEnumerable<Movie> movies, int availDelay, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null, QualityProfile qualityProfile = null)
         {
-            return movies.Select(x => ToResource(x, availDelay, null, upgradableSpecification, formatCalculationService)).ToList();
+            return movies.Select(x => ToResource(x, availDelay, null, upgradableSpecification, formatCalculationService, qualityProfile)).ToList();
         }
 
         public static List<Movie> ToModel(this IEnumerable<MovieResource> resources)

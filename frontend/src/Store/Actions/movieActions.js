@@ -267,6 +267,9 @@ export const sortPredicates = {
       } else {
         result += 8;
       }
+
+      result += parseInt(item.movieFile.quality.qualityWeight);
+
       qualityName = item.movieFile.quality.quality.name;
     }
 

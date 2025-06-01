@@ -25,6 +25,7 @@ interface Quality {
 export interface QualityModel {
   quality: Quality;
   revision: Revision;
+  qualityWeight?: number;
 }
 
 export default Quality;
