@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import TextTruncate from 'react-text-truncate';
 import { createSelector } from 'reselect';
 import AppState from 'App/State/AppState';
 import * as commandNames from 'Commands/commandNames';
@@ -83,7 +82,6 @@ import createAllMoviesSelector from 'Store/Selectors/createAllMoviesSelector';
 import createCommandsSelector from 'Store/Selectors/createCommandsSelector';
 import createDimensionsSelector from 'Store/Selectors/createDimensionsSelector';
 import createUISettingsSelector from 'Store/Selectors/createUISettingsSelector';
-import fonts from 'Styles/Variables/fonts';
 import sortByProp from 'Utilities/Array/sortByProp';
 import { findCommand, isCommandExecuting } from 'Utilities/Command';
 import formatRuntime from 'Utilities/Date/formatRuntime';
@@ -102,9 +100,6 @@ import MovieStatusLabel from './MovieStatusLabel';
 import MovieTags from './MovieTags';
 import MovieTitlesTable from './Titles/MovieTitlesTable';
 import styles from './MovieDetails.css';
-
-const defaultFontSize = parseInt(fonts.defaultFontSize);
-const lineHeight = parseFloat(fonts.lineHeight);
 
 function getFanartUrl(images: Image[]) {
   const image = images.find((image) => image.coverType === 'fanart');
@@ -263,7 +258,6 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
   const [isDeleteMovieModalOpen, setIsDeleteMovieModalOpen] = useState(false);
   const [isMovieHistoryModalOpen, setIsMovieHistoryModalOpen] = useState(false);
   const [titleRef, { width: titleWidth }] = useMeasure();
-  const [overviewRef, { height: overviewHeight }] = useMeasure();
   const wasRefreshing = usePrevious(isRefreshing);
   const wasRenaming = usePrevious(isRenaming);
 
@@ -882,14 +876,7 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
                 ) : null}
               </div>
 
-              <div ref={overviewRef} className={styles.overview}>
-                <TextTruncate
-                  line={Math.floor(
-                    overviewHeight / (defaultFontSize * lineHeight)
-                  )}
-                  text={overview}
-                />
-              </div>
+              <div className={styles.overview}>{overview}</div>
 
               <MetadataAttribution />
             </div>
