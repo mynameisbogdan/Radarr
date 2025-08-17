@@ -24,7 +24,7 @@ namespace NzbDrone.Core.ImportLists.TMDb.List
 
         private IEnumerable<ImportListRequest> GetMoviesRequest()
         {
-            Logger.Info("TMDb List {0}: Importing movies", Settings.ListId);
+            Logger.Info("Importing TMDb movies from list: {0}", Settings.ListId);
 
             var requestBuilder = RequestBuilder.Create()
                 .SetSegment("api", "4")
@@ -32,16 +32,11 @@ namespace NzbDrone.Core.ImportLists.TMDb.List
                 .SetSegment("id", Settings.ListId)
                 .SetSegment("secondaryRoute", "");
 
-            Logger.Trace("TMDb List {0}: Getting total pages", Settings.ListId);
+            Logger.Debug("Getting total pages that TMDb List: {0} consists of", Settings.ListId);
 
             var jsonResponse = JsonConvert.DeserializeObject<MovieSearchResource>(HttpClient.Execute(requestBuilder.Build()).Content);
 
             MaxPages = jsonResponse.TotalPages;
-
-            if (jsonResponse.TotalPages > 1)
-            {
-                Logger.Debug("TMDb List {0}: processing {1} pages", Settings.ListId, MaxPages);
-            }
 
             for (var pageNumber = 1; pageNumber <= MaxPages; pageNumber++)
             {
@@ -49,8 +44,7 @@ namespace NzbDrone.Core.ImportLists.TMDb.List
 
                 var request = requestBuilder.Build();
 
-                Logger.Debug("TMDb List {0}: Processing page {1} of {2}", Settings.ListId, pageNumber, MaxPages);
-                Logger.Trace("TMDb List {0}: Request URL: {1}", Settings.ListId, request.Url);
+                Logger.Debug("Importing TMDb movies from: {0}", request.Url);
 
                 yield return new ImportListRequest(request);
             }
