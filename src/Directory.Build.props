@@ -85,6 +85,9 @@
     <Deterministic Condition="$(AssemblyVersion.EndsWith('*'))">False</Deterministic>
 
     <PathMap>$(MSBuildProjectDirectory)=./$(MSBuildProjectName)/</PathMap>
+
+    <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">true</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <!-- Set the AssemblyConfiguration attribute for projects -->
