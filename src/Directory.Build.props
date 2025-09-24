@@ -100,7 +100,7 @@
   </PropertyGroup>
 
   <!-- Sentry specific configuration: Only in Release mode -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(GITHUB_ACTIONS)' == 'true'">
     <!-- https://docs.sentry.io/platforms/dotnet/configuration/msbuild/ -->
     <!-- OrgSlug, ProjectSlug and AuthToken are required. 
     They can be set below, via argument to 'msbuild -p:' or environment variable -->
@@ -124,6 +124,7 @@
   <!-- Standard testing packages -->
   <ItemGroup Condition="'$(TestProject)'=='true'">
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="2.4.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.1.0" />
