@@ -6,9 +6,8 @@
 #define AppURL "https://radarr.video/"
 #define ForumsURL "https://radarr.video/discord"
 #define AppExeName "Radarr.exe"
-#define BaseVersion GetEnv('MAJORVERSION')
-#define BuildNumber GetEnv('MINORVERSION')
-#define BuildVersion GetEnv('RADARRVERSION')
+#define BuildVersion GetEnv('RADARR_VERSION')
+#define MajorVersion GetEnv('RADARR_MAJOR_VERSION')
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -16,7 +15,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{56C1065D-3523-4025-B76D-6F73F67F7F82}
 AppName={#AppName}
-AppVersion={#BaseVersion}
+AppVersion={#MajorVersion}
 AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#ForumsURL}
@@ -25,7 +24,7 @@ DefaultDirName={commonappdata}\Radarr
 DisableDirPage=yes
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
-OutputBaseFilename=Radarr.{#BuildVersion}.{#Runtime}
+OutputBaseFilename=Radarr.{#BranchName}.{#BuildVersion}.{#Runtime}-installer
 SolidCompression=yes
 AppCopyright=Creative Commons 3.0 License
 AllowUNCPath=False
@@ -34,9 +33,9 @@ DisableReadyPage=True
 CompressionThreads=2
 Compression=lzma2/normal
 AppContact={#ForumsURL}
-VersionInfoVersion={#BaseVersion}.{#BuildNumber}
+VersionInfoVersion={#MajorVersion}
 SetupLogging=yes
-OutputDir=output
+OutputDir="..\..\..\_artifacts"
 WizardStyle=modern
 
 [Languages]
@@ -52,8 +51,8 @@ Name: "none"; Description: "Do not start automatically"; GroupDescription: "Star
 Name: "{app}"; Permissions: users-modify
 
 [Files]
-Source: "..\..\..\_artifacts\{#Runtime}\{#Framework}\Radarr\Radarr.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "..\..\..\_artifacts\{#Runtime}\{#Framework}\Radarr\*"; Excludes: "Radarr.Update"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\..\..\_output\{#Runtime}\{#Framework}\Radarr\Radarr.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "..\..\..\_output\{#Runtime}\{#Framework}\Radarr\*"; Excludes: "Radarr.Update"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
