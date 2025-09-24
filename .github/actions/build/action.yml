@@ -1,0 +1,197 @@
+name: Build Backend
+description: Builds the backend and packages it
+
+inputs:
+  framework:
+    description: ".NET framework used for the build"
+    required: true
+  branch:
+    description: "Branch name for this build"
+    required: true
+  version:
+    description: "Version number to build"
+    required: true
+  semantic_version:
+    description: "Semantic version to build"
+    required: true
+  runtime:
+    description: ".NET runtime to build for"
+    required: true
+  package_tests:
+    description: "True if tests should be packaged for later testing steps"
+  token:
+    description: 'The Github token.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup dotnet
+      uses: ./.github/actions/setup-dotnet
+
+    - name: Add Nuget registry source
+      shell: bash
+      run: >-
+        dotnet nuget add source
+        --name gh-openur https://nuget.pkg.github.com/openur/index.json
+        --username ${{ github.repository_owner }}
+        --password ${{ inputs.token }}
+        --store-password-in-clear-text
+
+    - name: Setup Environment Variables
+      id: variables
+      shell: bash
+      run: |
+        DOTNET_VERSION=$(dotnet --version)
+
+        echo "SDK_PATH=${{ env.DOTNET_ROOT }}/sdk/${DOTNET_VERSION}" >> "$GITHUB_ENV"
+        echo "RADARR_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
+        echo "BRANCH=${{ inputs.branch }}" >> "$GITHUB_ENV"
+
+        echo "NUGET_PACKAGES=${{ github.workspace }}/.nuget/packages" >> "$GITHUB_ENV"
+
+    - name: Enable Extra Platforms In SDK
+      if: startsWith(inputs.runtime, 'freebsd')
+      shell: bash
+      run: |
+        BUNDLEDVERSIONS="${SDK_PATH}/Microsoft.NETCoreSdk.BundledVersions.props"
+
+        if grep -q -e freebsd-arm64 -e freebsd-x64 "$BUNDLEDVERSIONS"; then
+          echo "Extra platforms already enabled"
+        else
+          echo "Enabling extra platform support"
+          sed -i.ORI 's/osx-x64/osx-x64;freebsd-arm64;freebsd-x64/' "$BUNDLEDVERSIONS"
+        fi
+
+        if grep -qv -e freebsd-arm64 -e freebsd-x64 src/Directory.Build.props; then
+          sed -i'' -e "s^<RuntimeIdentifiers>\(.*\)</RuntimeIdentifiers>^<RuntimeIdentifiers>\1;freebsd-arm64;freebsd-x64</RuntimeIdentifiers>^g" src/Directory.Build.props
+        fi
+
+    - name: Update Version Number
+      if: ${{ env.RADARR_VERSION != '' }}
+      shell: bash
+      run: |
+        echo "Updating version info to: $RADARR_VERSION"
+        sed -i'' -e "s/<string>10.0.0.0<\/string>/<string>$RADARR_VERSION<\/string>/g" distribution/osx/Radarr.app/Contents/Info.plist
+
+    - name: Build Backend
+      shell: bash
+      env:
+        SEMVER: ${{ inputs.semantic_version }}
+        RUNTIME: ${{ inputs.runtime }}
+      run: >-
+        [[ "$RUNTIME" == "win"* ]] && PLATFORM=Windows || PLATFORM=Posix
+
+        rm -rf _output _tests
+
+        echo "Building Radarr for $RUNTIME, Platform: $PLATFORM"
+
+        dotnet msbuild
+        -restore src/Radarr.sln
+        -p:SelfContained=true
+        -p:Configuration=Release
+        -p:Platform=$PLATFORM
+        -p:RuntimeIdentifiers=$RUNTIME
+        -p:EnableWindowsTargeting=true
+        -t:PublishAllRids
+        -p:Version="$SEMVER"
+        -p:AssemblyVersion="$RADARR_VERSION"
+        -p:AssemblyConfiguration="$BRANCH"
+        -p:SentryUploadSymbols=false
+
+    - name: Package
+      shell: bash
+      run: |
+        framework="${{ inputs.framework }}"
+        runtime="${{ inputs.runtime }}"
+
+        case "$runtime" in
+          linux*|freebsd*)
+            folder=_artifacts/$runtime/$framework/Radarr
+
+            echo "Packaging files"
+            rm -rf $folder
+            mkdir -p $folder
+            cp -r _output/$framework/$runtime/publish/* $folder
+            cp -r _output/Radarr.Update/$framework/$runtime/publish $folder/Radarr.Update
+            cp LICENSE $folder
+
+            echo "Removing Service helpers"
+            rm -f $folder/ServiceUninstall.*
+            rm -f $folder/ServiceInstall.*
+
+            echo "Removing Radarr.Windows"
+            rm $folder/Radarr.Windows.*
+
+            echo "Adding Radarr.Mono to UpdatePackage"
+            cp $folder/Radarr.Mono.* $folder/Radarr.Update
+            cp $folder/Mono.Posix.NETStandard.* $folder/Radarr.Update
+            cp $folder/libMonoPosixHelper.* $folder/Radarr.Update
+            ;;
+          win*)
+            folder=_artifacts/$runtime/$framework/Radarr
+
+            echo "Packaging files"
+            rm -rf $folder
+            mkdir -p $folder
+            cp -r _output/$framework/$runtime/publish/* $folder
+            cp -r _output/Radarr.Update/$framework/$runtime/publish $folder/Radarr.Update
+            cp LICENSE $folder
+            cp -r _output/$framework-windows/$runtime/publish/* $folder
+
+            echo "Removing Radarr.Mono"
+            rm -f $folder/Radarr.Mono.*
+            rm -f $folder/Mono.Posix.NETStandard.*
+            rm -f $folder/libMonoPosixHelper.*
+
+            echo "Adding Radarr.Windows to UpdatePackage"
+            cp $folder/Radarr.Windows.* $folder/Radarr.Update
+            ;;
+          osx*)
+            folder=_artifacts/$runtime/$framework/Radarr
+
+            echo "Packaging files"
+            rm -rf $folder
+            mkdir -p $folder
+            cp -r _output/$framework/$runtime/publish/* $folder
+            cp -r _output/Radarr.Update/$framework/$runtime/publish $folder/Radarr.Update
+            cp LICENSE $folder
+
+            echo "Removing Service helpers"
+            rm -f $folder/ServiceUninstall.*
+            rm -f $folder/ServiceInstall.*
+
+            echo "Removing Radarr.Windows"
+            rm $folder/Radarr.Windows.*
+
+            echo "Adding Radarr.Mono to UpdatePackage"
+            cp $folder/Radarr.Mono.* $folder/Radarr.Update
+            cp $folder/Mono.Posix.NETStandard.* $folder/Radarr.Update
+            cp $folder/libMonoPosixHelper.* $folder/Radarr.Update
+            ;;
+        esac
+
+    - name: Package Tests
+      if: ${{ inputs.package_tests }}
+      shell: bash
+      run: |
+        framework="${{ inputs.framework }}"
+        runtime="${{ inputs.runtime }}"
+
+        cp test.sh "_tests/$framework/$runtime/publish"
+
+        rm -f _tests/$framework/$runtime/*.log.config
+
+    - name: Upload Test Artifacts
+      if: ${{ inputs.package_tests }}
+      uses: ./.github/actions/publish-test-artifact
+      with:
+        framework: ${{ inputs.framework }}
+        runtime: ${{ inputs.runtime }}
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ inputs.runtime }}
+        path: _artifacts/**/*
+        if-no-files-found: error
