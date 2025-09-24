@@ -1,0 +1,46 @@
+name: Release
+description: Create a release and upload build artifacts to it.
+
+inputs:
+  version:
+    description: "Version for release"
+    required: true
+  prerelease:
+    description: "Optionally marks this release as prerelease. Set to true to enable."
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download release artifacts
+      uses: actions/download-artifact@v8
+      with:
+        path: _artifacts
+        pattern: release-*
+        merge-multiple: true
+
+    - name: Get previous release
+      id: previous-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        latest: true
+        prerelease: ${{ inputs.prerelease }}
+        doNotFailIfNotFound: true
+
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: _artifacts/Radarr.*
+        artifactErrorsFailBuild: true
+        commit: ${{ github.sha }}
+        draft: false
+        generateReleaseNotes: true
+        generateReleaseNotesPreviousTag: ${{ steps.previous-release.outputs.tag_name }}
+        name: ${{ inputs.version }}
+        prerelease: ${{ inputs.prerelease }}
+        skipIfReleaseExists: false
+        tag: v${{ inputs.version }}
+        immutableCreate: true
