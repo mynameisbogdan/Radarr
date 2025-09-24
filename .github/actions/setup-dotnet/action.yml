@@ -1,0 +1,12 @@
+name: Setup .NET SDK
+description: Setup .NET SDK for GitHub Actions
+
+runs:
+  using: composite
+  steps:
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v5
+      env:
+        DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+        DOTNET_NOLOGO: 1
