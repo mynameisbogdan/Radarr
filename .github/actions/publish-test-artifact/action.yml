@@ -1,0 +1,19 @@
+name: Publish Test Artifact
+description: Publishes a test artifact
+
+inputs:
+  framework:
+    description: '.NET framework'
+    required: true
+  runtime:
+    description: '.NET runtime'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/upload-artifact@v7
+      with:
+        name: tests-${{ inputs.runtime }}
+        path: _tests/${{ inputs.framework }}/${{ inputs.runtime }}/publish/**/*
+        if-no-files-found: error
