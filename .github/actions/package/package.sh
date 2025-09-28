@@ -31,7 +31,7 @@ do
   find $radarrFolder -name "Radarr" -exec chmod a+x {} \;
   find $radarrFolder -name "Radarr.Update" -exec chmod a+x {} \;
 
-  if [[ "$name" == *"osx"* ]]; then
+  if [[ "$name" == "osx"* ]]; then
     echo "Creating macOS package"
 
     packageName="$name-app"
@@ -54,15 +54,14 @@ do
   fi
 
   echo "Packaging Artifact"
-  if [[ "$name" == *"linux"* ]] || [[ "$name" == *"osx"* ]] || [[ "$name" == *"freebsd"* ]]; then
+  if [[ "$name" == "linux"* ]] || [[ "$name" == "osx"* ]] || [[ "$name" == "freebsd"* ]]; then
     tar -zcf "./$artifactsFolder/$archiveName.tar.gz" -C $folderName Radarr
 	fi
 
-  if [[ "$name" == *"win"* ]]; then
-    if [ "$RUNNER_OS" = "Windows" ]
-      then
-        (cd $folderName; 7z a -tzip "../../../$artifactsFolder/$archiveName.zip" ./Radarr)
-      else
+  if [[ "$name" == "win"* ]]; then
+    if [ "$RUNNER_OS" = "Windows" ]; then
+      (cd $folderName; 7z a -tzip "../../../$artifactsFolder/$archiveName.zip" ./Radarr)
+    else
       (cd $folderName; zip -rq "../../../$artifactsFolder/$archiveName.zip" ./Radarr)
     fi
 	fi

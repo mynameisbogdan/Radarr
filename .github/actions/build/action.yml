@@ -40,10 +40,14 @@ runs:
 
     - name: Add Nuget registry source
       if: startsWith(inputs.runtime, 'freebsd')
-      working-directory: src
       shell: bash
-      run: |-
-        dotnet nuget add source --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --username ${{ github.repository_owner }} --password ${{ inputs.token }} --store-password-in-clear-text
+      run: >-
+        dotnet nuget add source
+        --configfile src/NuGet.config
+        --name github https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        --username ${{ github.repository_owner }}
+        --password ${{ inputs.token }}
+        --store-password-in-clear-text
 
     - name: Enable Extra Platforms In SDK
       if: startsWith(inputs.runtime, 'freebsd')

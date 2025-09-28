@@ -49,14 +49,15 @@ runs:
       run: $GITHUB_ACTION_PATH/package.sh
 
     - name: Install innosetup
-      if: ${{ runner.os == 'Windows' }}
-      shell: bash
-      run: choco install --no-progress --limit-output --yes innosetup --version=6.4.0
+      if: runner.os == 'Windows'
+      shell: cmd
+      run: winget install --id JRSoftware.InnoSetup --version 6.5.4 --exact --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity --silent --scope machine
 
     - name: Create Windows Installer
       if: startsWith(inputs.runtime, 'win')
-      shell: bash
-      run: ISCC.exe distribution/windows/setup/radarr.iss "//DFramework=${{ inputs.framework }}" "//DRuntime=${{ inputs.runtime }}" "//DBranchName=${{ inputs.branch }}"
+      shell: cmd
+      run: |
+        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" distribution/windows/setup/radarr.iss "/DFramework=${{ inputs.framework }}" "/DRuntime=${{ inputs.runtime }}" "/DBranchName=${{ inputs.branch }}"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4

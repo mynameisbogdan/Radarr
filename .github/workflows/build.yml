@@ -1,67 +1,37 @@
 name: Build
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - develop
-      - main
-    paths-ignore:
-      - "src/Radarr.Api.*/openapi.json"
-      - "**.md"
-  pull_request:
-    branches:
-      - develop
-    paths-ignore:
-      - "src/NzbDrone.Core/Localization/Core/**"
-      - "src/Radarr.Api.*/openapi.json"
-      - "**.md"
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.event_name == 'workflow_dispatch' }}
-  cancel-in-progress: true
+  workflow_call:
+    inputs:
+      framework:
+        description: ".NET framework"
+        type: string
+        required: true
+      branch:
+        description: "Git branch used for this build"
+        type: string
+        required: true
+      major_version:
+        description: "Radarr major version"
+        type: string
+        required: true
+      version:
+        description: "Radarr version"
+        type: string
+        required: true
 
 env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_NOLOGO: 1
-  FRAMEWORK: net9.0
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      framework: ${{ steps.variables.outputs.framework }}
-      major_version: ${{ steps.variables.outputs.major_version }}
-      version: ${{ steps.variables.outputs.version }}
-      branch: ${{ steps.variables.outputs.branch }}
-    steps:
-      - name: Check out
-        uses: actions/checkout@v5
-
-      - name: Setup variables
-        id: variables
-        shell: bash
-        env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-        run: |
-          VERSION=$(jq -re '.version' version.json)
-          BRANCH=${BRANCH_NAME,,}
-
-          echo "framework=${{ env.FRAMEWORK }}" >> "$GITHUB_OUTPUT"
-          echo "branch=${BRANCH//\//-}" >> "$GITHUB_OUTPUT"
-          echo "version=${VERSION}.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-          echo "major_version=${VERSION%%.*}" >> "$GITHUB_OUTPUT"
-
   backend:
-    needs: prepare
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - runtime: freebsd-x64
-            package_tests: false
-            os: ubuntu-latest
           - runtime: linux-arm
             package_tests: false
             os: ubuntu-latest
@@ -96,9 +66,9 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          branch: ${{ needs.prepare.outputs.branch }}
-          version: ${{ needs.prepare.outputs.version }}
-          framework: ${{ needs.prepare.outputs.framework }}
+          branch: ${{ inputs.branch }}
+          version: ${{ inputs.version }}
+          framework: ${{ inputs.framework }}
           runtime: ${{ matrix.runtime }}
           package_tests: ${{ matrix.package_tests }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -185,7 +155,7 @@ jobs:
           postgres-version: ${{ matrix.postgres-version }}
 
   integration_test:
-    needs: [prepare, backend]
+    needs: backend
     strategy:
       fail-fast: false
       matrix:
@@ -195,17 +165,17 @@ jobs:
             artifact: tests-linux-x64
             filter: TestCategory!=ManualTest&TestCategory!=WINDOWS&TestCategory=IntegrationTest
             binary_artifact: build-linux-x64
-            binary_path: linux-x64/${{ needs.prepare.outputs.framework }}/Radarr
+            binary_path: linux-x64/${{ inputs.framework }}/Radarr
           - os: macos-latest
             artifact: tests-osx-arm64
             filter: TestCategory!=ManualTest&TestCategory!=WINDOWS&TestCategory=IntegrationTest
             binary_artifact: build-osx-arm64
-            binary_path: osx-arm64/${{ needs.prepare.outputs.framework }}/Radarr
+            binary_path: osx-arm64/${{ inputs.framework }}/Radarr
           - os: windows-latest
             artifact: tests-win-x64
             filter: TestCategory!=ManualTest&TestCategory!=LINUX&TestCategory=IntegrationTest
             binary_artifact: build-win-x64
-            binary_path: win-x64/${{ needs.prepare.outputs.framework }}/Radarr
+            binary_path: win-x64/${{ inputs.framework }}/Radarr
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
@@ -224,7 +194,6 @@ jobs:
 
   package:
     needs:
-      - prepare
       - backend
       - frontend
     strategy:
@@ -232,7 +201,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         runtime:
-          - freebsd-x64
           - linux-arm
           - linux-arm64
           - linux-musl-arm64
@@ -253,30 +221,9 @@ jobs:
       - name: Package
         uses: ./.github/actions/package
         with:
-          framework: ${{ needs.prepare.outputs.framework }}
+          framework: ${{ inputs.framework }}
           runtime: ${{ matrix.runtime }}
           artifact: build-${{ matrix.runtime }}
-          branch: ${{ needs.prepare.outputs.branch }}
-          major_version: ${{ needs.prepare.outputs.major_version }}
-          version: ${{ needs.prepare.outputs.version }}
-
-  release:
-    needs:
-      - prepare
-      - unit_test
-      - unit_test_postgres
-      - integration_test
-      - package
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    if: github.event_name == 'workflow_dispatch'
-    steps:
-      - name: Check out
-        uses: actions/checkout@v5
-
-      - name: Release
-        uses: ./.github/actions/release
-        with:
-          version: ${{ needs.prepare.outputs.version }}
-          prerelease: ${{ github.ref_name != 'main' }}
+          branch: ${{ inputs.branch }}
+          major_version: ${{ inputs.major_version }}
+          version: ${{ inputs.version }}
