@@ -24,7 +24,7 @@ concurrency:
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_NOLOGO: 1
-  FRAMEWORK: net8.0
+  FRAMEWORK: net9.0
 
 jobs:
   prepare:
