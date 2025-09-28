@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  FRAMEWORK: net8.0
+  FRAMEWORK: net9.0
 
 jobs:
   prepare:

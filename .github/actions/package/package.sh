@@ -5,7 +5,7 @@ set -e
 outputFolder=_output
 artifactsFolder=_artifacts
 uiFolder="$outputFolder/UI"
-framework="${FRAMEWORK:=net8.0}"
+framework="${FRAMEWORK:=net9.0}"
 
 rm -rf $artifactsFolder
 mkdir $artifactsFolder
