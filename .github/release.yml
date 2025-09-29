@@ -1,0 +1,26 @@
+changelog:
+  exclude:
+    authors:
+      - weblate
+  categories:
+    - title: Breaking Changes
+      labels:
+        - breaking-change
+    - title: New
+      labels:
+        - feature
+    - title: Fixed
+      labels:
+        - bugfix
+    - title: Other Changes
+      labels:
+        - "*"
+      exclude:
+        labels:
+          - dependencies
+          - breaking-change
+          - bugfix
+          - feature
+    - title: Dependencies
+      labels:
+        - dependencies
