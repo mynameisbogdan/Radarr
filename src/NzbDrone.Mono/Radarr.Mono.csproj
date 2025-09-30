@@ -3,12 +3,8 @@
     <TargetFrameworks>net9.0</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-  <!-- 
-       The netstandard version here doesn't work in net framework
-       See https://github.com/xamarin/XamarinComponents/issues/282
-  -->
   <ItemGroup>
-    <PackageReference Include="Mono.Posix.NETStandard" Version="5.20.1.34-servarr20" />
+    <PackageReference Include="Mono.Unix" Version="7.1.0-final.1.21458.1" />
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
