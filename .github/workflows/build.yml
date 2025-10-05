@@ -6,6 +6,8 @@ on:
     branches:
       - develop
       - main
+    tags:
+      - 'v*'
     paths-ignore:
       - "src/Radarr.Api.*/openapi.json"
       - "**.md"
@@ -29,26 +31,27 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       framework: ${{ steps.variables.outputs.framework }}
-      major_version: ${{ steps.variables.outputs.major_version }}
-      version: ${{ steps.variables.outputs.version }}
+      major_version: ${{ steps.gitversion.outputs.major }}
+      version: ${{ steps.gitversion.outputs.assemblySemVer }}
+      semantic_version: ${{ steps.gitversion.outputs.semVer }}
       branch: ${{ steps.variables.outputs.branch }}
     steps:
       - name: Check out
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # avoid shallow clone for GitVersion
+
+      - name: Setup GitVersion
+        uses: ./.github/actions/setup-gitversion
+        id: gitversion
 
       - name: Setup variables
         id: variables
-        shell: bash
         env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          BRANCH: ${{ steps.gitversion.outputs.escapedBranchName }}
         run: |
-          VERSION=$(jq -re '.version' version.json)
-          BRANCH=${BRANCH_NAME,,}
-
           echo "framework=${{ env.FRAMEWORK }}" >> "$GITHUB_OUTPUT"
-          echo "branch=${BRANCH//\//-}" >> "$GITHUB_OUTPUT"
-          echo "version=${VERSION}.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-          echo "major_version=${VERSION%%.*}" >> "$GITHUB_OUTPUT"
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
 
   backend:
     needs: prepare
@@ -96,6 +99,7 @@ jobs:
         with:
           branch: ${{ needs.prepare.outputs.branch }}
           version: ${{ needs.prepare.outputs.version }}
+          semantic_version: ${{ needs.prepare.outputs.semantic_version }}
           framework: ${{ needs.prepare.outputs.framework }}
           runtime: ${{ matrix.runtime }}
           package_tests: ${{ matrix.package_tests }}
@@ -270,7 +274,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Check out
         uses: actions/checkout@v5
@@ -278,5 +282,5 @@ jobs:
       - name: Release
         uses: ./.github/actions/release
         with:
-          version: ${{ needs.prepare.outputs.version }}
+          version: ${{ github.event.create.ref }}
           prerelease: ${{ github.ref_name != 'main' }}

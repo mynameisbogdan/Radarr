@@ -1,0 +1,19 @@
+workflow: GitFlow/v1
+mode: ContinuousDelivery
+
+next-version: 6.0.0
+
+major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-,/\\\\]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
+minor-version-bump-message: "^(feat)(\\([\\w\\s-,/\\\\]*\\))?:"
+patch-version-bump-message: "^(fix|perf)(\\([\\w\\s-,/\\\\]*\\))?:"
+
+assembly-versioning-scheme: MajorMinorPatchTag
+assembly-file-versioning-scheme: MajorMinorPatchTag
+assembly-informational-format: "{SemVer}-{BranchName:l}-build{env:GITHUB_RUN_NUMBER ?? 0}+{ShortSha}"
+
+branches:
+  develop:
+    label: dev
+
+ignore:
+  commits-before: "2025-10-01T00:00:00"

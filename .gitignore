@@ -169,8 +169,5 @@ packages.config.md5sum
 node_modules
 node_modules.nosync
 
-# API doc generation
-.config/
-
 # Ignore Jetbrains IntelliJ Workspace Directories
 .idea/

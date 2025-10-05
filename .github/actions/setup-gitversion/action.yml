@@ -1,0 +1,34 @@
+name: Setup GitVersion
+description: Install GitVersion and determine version information
+
+outputs:
+  semVer:
+    description: The SemVer value
+    value: ${{ steps.gitversion.outputs.semVer }}
+  preReleaseTag:
+    description: The PreReleaseTag value
+    value: ${{ steps.gitversion.outputs.preReleaseTag }}
+  assemblySemVer:
+    description: The AssemblySemVer value
+    value: ${{ steps.gitversion.outputs.assemblySemVer }}
+  informationalVersion:
+    description: The InformationalVersion value
+    value: ${{ steps.gitversion.outputs.informationalVersion }}
+  major:
+    description: The Major value
+    value: ${{ steps.gitversion.outputs.major }}
+  escapedBranchName:
+    description: The EscapedBranchName value
+    value: ${{ steps.gitversion.outputs.escapedBranchName }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v4.1.0
+      with:
+        versionSpec: 6.4.0
+
+    - name: Determine Version
+      uses: gittools/actions/gitversion/execute@v4.1.0
+      id: gitversion

@@ -8,6 +8,9 @@ inputs:
   version:
     description: "Version number to build"
     required: true
+  semantic_version:
+    description: "Semantic version to build"
+    required: true
   framework:
     description: ".NET framework used for the build"
     required: true
@@ -88,7 +91,7 @@ runs:
 
         echo "Building Radarr for $runtime, Platform: $platform"
 
-        dotnet msbuild -restore src/Radarr.sln -p:SelfContained=true -p:Configuration=Release -p:Platform=$platform -p:RuntimeIdentifiers=$runtime -p:EnableWindowsTargeting=true -t:PublishAllRids -p:AssemblyVersion=$RADARR_VERSION -p:AssemblyConfiguration="$BRANCH"
+        dotnet msbuild -restore src/Radarr.sln -p:SelfContained=true -p:Configuration=Release -p:Platform=$platform -p:RuntimeIdentifiers=$runtime -p:EnableWindowsTargeting=true -t:PublishAllRids -p:Version="${{ inputs.semantic_version }}" -p:AssemblyVersion="$RADARR_VERSION" -p:AssemblyConfiguration="$BRANCH"
 
     - name: Package
       shell: bash
