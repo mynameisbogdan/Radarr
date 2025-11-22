@@ -111,8 +111,8 @@ namespace NzbDrone.Core.MediaFiles.MediaInfo
                     frames = FFProbe.GetFrames(filename, customArguments: $"-read_intervals \"%+#1\" -select_streams v:{primaryVideoStream?.Index ?? 0}");
                 }
 
-                var streamSideData = primaryVideoStream?.SideData ?? new ();
-                var framesSideData = frames?.Frames.FirstOrDefault()?.SideData ?? new ();
+                var streamSideData = primaryVideoStream?.SideData ?? new();
+                var framesSideData = frames?.Frames.FirstOrDefault()?.SideData ?? new();
 
                 var sideData = streamSideData.Concat(framesSideData).ToList();
                 mediaInfoModel.VideoHdrFormat = GetHdrFormat(mediaInfoModel.VideoBitDepth, mediaInfoModel.VideoColourPrimaries, mediaInfoModel.VideoTransferCharacteristics, sideData);
