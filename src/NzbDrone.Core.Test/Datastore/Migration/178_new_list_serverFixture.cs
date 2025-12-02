@@ -2,6 +2,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using FizzWare.NBuilder;
 using FluentAssertions;
+using FluentMigrator;
+using FluentMigrator.Postgres;
 using NUnit.Framework;
 using NzbDrone.Core.Datastore.Migration;
 using NzbDrone.Core.ImportLists.RadarrList;
@@ -99,7 +101,9 @@ namespace NzbDrone.Core.Test.Datastore.Migration
                 foreach (var row in rows)
                 {
                     row.Id = i++;
-                    c.Insert.IntoTable("NetImport").Row(row);
+
+                    c.IfDatabase(ProcessorIdConstants.PostgreSQL).Insert.IntoTable("NetImport").WithOverridingSystemValue().Row(row);
+                    c.IfDatabase(ProcessorIdConstants.SQLite).Insert.IntoTable("NetImport").Row(row);
                 }
             });
 
@@ -166,7 +170,9 @@ namespace NzbDrone.Core.Test.Datastore.Migration
                 foreach (var row in rows)
                 {
                     row.Id = i++;
-                    c.Insert.IntoTable("NetImport").Row(row);
+
+                    c.IfDatabase(ProcessorIdConstants.PostgreSQL).Insert.IntoTable("NetImport").WithOverridingSystemValue().Row(row);
+                    c.IfDatabase(ProcessorIdConstants.SQLite).Insert.IntoTable("NetImport").Row(row);
                 }
             });
 
