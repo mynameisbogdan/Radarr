@@ -82,6 +82,27 @@ namespace Radarr.Api.V3.MovieFiles
                 .ToList();
         }
 
+        [HttpGet("mediaInfos")]
+        [Produces("application/json")]
+        public object GetMediaInfoForMovieFiles()
+        {
+            var movieFiles = _mediaFileService.GetAllFiles();
+
+            if (movieFiles == null)
+            {
+                return new List<MediaInfoResource>();
+            }
+
+            return movieFiles
+                .OrderBy(f => f.RelativePath, StringComparer.OrdinalIgnoreCase)
+                .Select(f => new
+                {
+                    f.RelativePath,
+                    MediaInfo = f.MediaInfo.ToResource(f.SceneName),
+                })
+                .ToList();
+        }
+
         [RestPutById]
         [Consumes("application/json")]
         public ActionResult<MovieFileResource> SetMovieFile([FromBody] MovieFileResource movieFileResource)
