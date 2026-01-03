@@ -1,3 +1,4 @@
+using System;
 using NzbDrone.Common.Http;
 
 namespace NzbDrone.Common.Cloud
@@ -20,7 +21,7 @@ namespace NzbDrone.Common.Cloud
                 .SetHeader("Authorization", $"Bearer {AuthToken}")
                 .CreateFactory();
 
-            RadarrMetadata = new HttpRequestBuilder("https://api.radarr.video/v1/{route}")
+            RadarrMetadata = new HttpRequestBuilder($"{Environment.GetEnvironmentVariable("RADARR_METADATA_API")?.TrimEnd('/') ?? "https://api.radarr.video/v1"}/{{route}}")
                 .CreateFactory();
         }
 
