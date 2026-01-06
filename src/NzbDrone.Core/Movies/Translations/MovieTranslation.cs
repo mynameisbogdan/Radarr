@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NzbDrone.Core.Languages;
 
 namespace NzbDrone.Core.Movies.Translations
@@ -9,5 +10,6 @@ namespace NzbDrone.Core.Movies.Translations
         public string CleanTitle { get; set; }
         public string Overview { get; set; }
         public Language Language { get; set; }
+        public List<MediaCover.MediaCover> Images { get; set; } = [];
     }
 }

@@ -123,21 +123,19 @@ namespace NzbDrone.Core.Extras.Metadata.Consumers.Xbmc
             {
                 _logger.Debug("Generating Movie Metadata for: {0}", Path.Combine(movie.Path, movieFile.RelativePath));
 
-                var movieMetadataLanguage = Settings.MovieMetadataLanguage == (int)Language.Original ?
-                    (int)movie.MovieMetadata.Value.OriginalLanguage :
-                    Settings.MovieMetadataLanguage;
-
                 var movieTranslations = _movieTranslationsService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId);
-                var selectedSettingsLanguage = Language.FindById(movieMetadataLanguage);
+                var selectedSettingsLanguage = GetMovieMetadataLanguage(movie);
                 var movieTranslation = movieTranslations.FirstOrDefault(mt => mt.Language == selectedSettingsLanguage);
 
                 var credits = _creditService.GetAllCreditsForMovieMetadata(movie.MovieMetadataId);
 
                 var watched = GetExistingWatchedStatus(movie, movieFile.RelativePath);
 
-                var thumbnail = movie.MovieMetadata.Value.Images.SingleOrDefault(i => i.CoverType == MediaCoverTypes.Screenshot);
-                var posters = movie.MovieMetadata.Value.Images.Where(i => i.CoverType == MediaCoverTypes.Poster).ToList();
-                var fanarts = movie.MovieMetadata.Value.Images.Where(i => i.CoverType == MediaCoverTypes.Fanart).ToList();
+                var covers = _mediaCoverService.GetMovieMediaCovers(movie, selectedSettingsLanguage).ToList();
+
+                var thumbnail = covers.SingleOrDefault(i => i.CoverType == MediaCoverTypes.Screenshot);
+                var posters = covers.Where(i => i.CoverType == MediaCoverTypes.Poster).ToList();
+                var fanarts = covers.Where(i => i.CoverType == MediaCoverTypes.Fanart).ToList();
 
                 var details = new XElement("movie");
 
@@ -445,6 +443,15 @@ namespace NzbDrone.Core.Extras.Metadata.Consumers.Xbmc
             return string.IsNullOrEmpty(xmlResult) ? null : new MetadataFileResult(metadataFileName, xmlResult.Trim(Environment.NewLine.ToCharArray()));
         }
 
+        private Language GetMovieMetadataLanguage(Movie movie)
+        {
+            var metadataLanguage = Settings.MovieMetadataLanguage == (int)Language.Original
+                ? (int)movie.MovieMetadata.Value.OriginalLanguage
+                : Settings.MovieMetadataLanguage;
+
+            return Language.FindById(metadataLanguage);
+        }
+
         public override List<ImageFileResult> MovieImages(Movie movie)
         {
             if (!Settings.MovieImages)
@@ -457,7 +464,7 @@ namespace NzbDrone.Core.Extras.Metadata.Consumers.Xbmc
 
         private IEnumerable<ImageFileResult> ProcessMovieImages(Movie movie)
         {
-            foreach (var image in movie.MovieMetadata.Value.Images)
+            foreach (var image in _mediaCoverService.GetMovieMediaCovers(movie, GetMovieMetadataLanguage(movie)))
             {
                 var source = _mediaCoverService.GetCoverPath(movie.Id, image.CoverType);
                 var destination = image.CoverType.ToString().ToLowerInvariant() + Path.GetExtension(source);

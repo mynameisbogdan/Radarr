@@ -11,9 +11,11 @@ using NzbDrone.Common.EnvironmentInfo;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Common.Http;
 using NzbDrone.Core.Configuration;
+using NzbDrone.Core.Languages;
 using NzbDrone.Core.Messaging.Events;
 using NzbDrone.Core.Movies;
 using NzbDrone.Core.Movies.Events;
+using NzbDrone.Core.Movies.Translations;
 
 namespace NzbDrone.Core.MediaCover
 {
@@ -23,6 +25,7 @@ namespace NzbDrone.Core.MediaCover
         void ConvertToLocalUrls(int movieId, IEnumerable<MediaCover> covers, Dictionary<string, FileInfo> fileInfos = null);
         void ConvertToLocalUrls(IEnumerable<Tuple<int, IEnumerable<MediaCover>>> items, Dictionary<string, FileInfo> coverFileInfos);
         string GetCoverPath(int movieId, MediaCoverTypes coverType, int? height = null);
+        public IEnumerable<MediaCover> GetMovieMediaCovers(Movie movie, Language language);
     }
 
     public class MediaCoverService :
@@ -36,6 +39,8 @@ namespace NzbDrone.Core.MediaCover
         private readonly IDiskProvider _diskProvider;
         private readonly ICoverExistsSpecification _coverExistsSpecification;
         private readonly IConfigFileProvider _configFileProvider;
+        private readonly IConfigService _configService;
+        private readonly IMovieTranslationService _movieTranslationService;
         private readonly IEventAggregator _eventAggregator;
         private readonly Logger _logger;
 
@@ -43,7 +48,7 @@ namespace NzbDrone.Core.MediaCover
 
         // ImageSharp is slow on ARM (no hardware acceleration on mono yet)
         // So limit the number of concurrent resizing tasks
-        private static SemaphoreSlim _semaphore = new SemaphoreSlim((int)Math.Ceiling(Environment.ProcessorCount / 2.0));
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim((int)Math.Ceiling(Environment.ProcessorCount / 2.0));
 
         public MediaCoverService(IMediaCoverProxy mediaCoverProxy,
                                  IImageResizer resizer,
@@ -52,6 +57,8 @@ namespace NzbDrone.Core.MediaCover
                                  IAppFolderInfo appFolderInfo,
                                  ICoverExistsSpecification coverExistsSpecification,
                                  IConfigFileProvider configFileProvider,
+                                 IConfigService configService,
+                                 IMovieTranslationService movieTranslationService,
                                  IEventAggregator eventAggregator,
                                  Logger logger)
         {
@@ -61,6 +68,8 @@ namespace NzbDrone.Core.MediaCover
             _diskProvider = diskProvider;
             _coverExistsSpecification = coverExistsSpecification;
             _configFileProvider = configFileProvider;
+            _configService = configService;
+            _movieTranslationService = movieTranslationService;
             _eventAggregator = eventAggregator;
             _logger = logger;
 
@@ -136,6 +145,23 @@ namespace NzbDrone.Core.MediaCover
             }
         }
 
+        public IEnumerable<MediaCover> GetMovieMediaCovers(Movie movie, Language language)
+        {
+            var translationCovers = _movieTranslationService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId)
+                .FirstOrDefault(t => t.Language == language)?
+                .Images;
+
+            foreach (var cover in movie.MovieMetadata.Value.Images)
+            {
+                if (cover.CoverType == MediaCoverTypes.Unknown)
+                {
+                    continue;
+                }
+
+                yield return translationCovers?.FirstOrDefault(image => image.CoverType == cover.CoverType) ?? cover;
+            }
+        }
+
         private string GetMovieCoverPath(int movieId)
         {
             return Path.Combine(_coverRootFolder, movieId.ToString());
@@ -146,7 +172,9 @@ namespace NzbDrone.Core.MediaCover
             var updated = false;
             var toResize = new List<Tuple<MediaCover, bool>>();
 
-            foreach (var cover in movie.MovieMetadata.Value.Images)
+            var covers = GetMovieMediaCovers(movie, (Language)_configService.MovieInfoLanguage);
+
+            foreach (var cover in covers)
             {
                 if (cover.CoverType == MediaCoverTypes.Unknown)
                 {
