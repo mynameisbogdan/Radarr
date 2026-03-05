@@ -251,9 +251,13 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
             movie.Year = resource.Year;
 
             // If the premier differs from the TMDB year, use it as a secondary year.
-            if (resource.Premier.HasValue && resource.Premier?.Year != movie.Year)
+            if (resource.Premier.HasValue && resource.Premier.Value.Year != movie.Year)
             {
-                movie.SecondaryYear = resource.Premier?.Year;
+                movie.SecondaryYear = resource.Premier.Value.Year;
+            }
+            else if (resource.DigitalRelease.HasValue && resource.DigitalRelease.Value.Year != movie.Year)
+            {
+                movie.SecondaryYear = resource.DigitalRelease.Value.Year;
             }
 
             if (resource.Runtime != null)
