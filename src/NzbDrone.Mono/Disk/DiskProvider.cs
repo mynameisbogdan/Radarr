@@ -8,13 +8,15 @@ using NLog;
 using NzbDrone.Common.Disk;
 using NzbDrone.Common.EnsureThat;
 using NzbDrone.Common.EnvironmentInfo;
+using NzbDrone.Common.Extensions;
 
 namespace NzbDrone.Mono.Disk
 {
     public class DiskProvider : DiskProviderBase
     {
-        // Mono supports sending -1 for an int to indicate that the owner or group should not be set
-        private const int UnchangedId = -1;
+        // Mono supports sending -1 for a uint to indicate that the owner or group should not be set
+        // `unchecked((uint)-1)` and `uint.MaxValue` are the same thing.
+        private const uint UNCHANGED_ID = uint.MaxValue;
 
         private readonly Logger _logger;
         private readonly IProcMountProvider _procMountProvider;
@@ -105,7 +107,7 @@ namespace NzbDrone.Mono.Disk
 
             var groupId = GetGroupId(group);
 
-            if (Syscall.chown(path, -1, groupId) < 0)
+            if (Syscall.chown(path, unchecked((uint)-1), groupId) < 0)
             {
                 var error = Stdlib.GetLastError();
 
@@ -467,14 +469,14 @@ namespace NzbDrone.Mono.Disk
             return _createRefLink.TryCreateRefLink(source, destination);
         }
 
-        private static int GetUserId(string user)
+        private uint GetUserId(string user)
         {
-            if (string.IsNullOrWhiteSpace(user))
+            if (user.IsNullOrWhiteSpace())
             {
-                return UnchangedId;
+                return UNCHANGED_ID;
             }
 
-            if (int.TryParse(user, out var userId))
+            if (uint.TryParse(user, out var userId))
             {
                 return userId;
             }
@@ -486,17 +488,17 @@ namespace NzbDrone.Mono.Disk
                 throw new LinuxPermissionsException("Unknown user: {0}", user);
             }
 
-            return Convert.ToInt32(u.pw_uid);
+            return u.pw_uid;
         }
 
-        private static int GetGroupId(string group)
+        private uint GetGroupId(string group)
         {
-            if (string.IsNullOrWhiteSpace(group))
+            if (group.IsNullOrWhiteSpace())
             {
-                return UnchangedId;
+                return UNCHANGED_ID;
             }
 
-            if (int.TryParse(group, out var groupId))
+            if (uint.TryParse(group, out var groupId))
             {
                 return groupId;
             }
@@ -508,7 +510,7 @@ namespace NzbDrone.Mono.Disk
                 throw new LinuxPermissionsException("Unknown group: {0}", group);
             }
 
-            return Convert.ToInt32(g.gr_gid);
+            return g.gr_gid;
         }
     }
 }
