@@ -134,8 +134,8 @@ PackageLinux()
     echo "Adding Radarr.Mono to UpdatePackage"
     cp $folder/Radarr.Mono.* $folder/Radarr.Update
     if [ "$framework" = "net10.0" ]; then
-        cp $folder/Mono.Unix.* $folder/Radarr.Update
-        cp $folder/libMono.Unix.* $folder/Radarr.Update
+        cp $folder/Mono.Posix.NETStandard.* $folder/Radarr.Update
+        cp $folder/libMonoPosixHelper.* $folder/Radarr.Update
     fi
 
     ProgressEnd "Creating $runtime Package for $framework"
@@ -162,8 +162,8 @@ PackageMacOS()
     echo "Adding Radarr.Mono to UpdatePackage"
     cp $folder/Radarr.Mono.* $folder/Radarr.Update
     if [ "$framework" = "net10.0" ]; then
-        cp $folder/Mono.Unix.* $folder/Radarr.Update
-        cp $folder/libMono.Unix.* $folder/Radarr.Update
+        cp $folder/Mono.Posix.NETStandard.* $folder/Radarr.Update
+        cp $folder/libMonoPosixHelper.* $folder/Radarr.Update
     fi
 
     ProgressEnd 'Creating MacOS Package'
@@ -206,8 +206,8 @@ PackageWindows()
 
     echo "Removing Radarr.Mono"
     rm -f $folder/Radarr.Mono.*
-    rm -f $folder/Mono.Unix.*
-    rm -f $folder/libMono.Unix.*
+    rm -f $folder/Mono.Posix.NETStandard.*
+    rm -f $folder/libMonoPosixHelper.*
 
     echo "Adding Radarr.Windows to UpdatePackage"
     cp $folder/Radarr.Windows.* $folder/Radarr.Update
