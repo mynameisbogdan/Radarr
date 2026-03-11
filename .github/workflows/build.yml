@@ -35,7 +35,7 @@ jobs:
       semantic_version: ${{ steps.variables.outputs.semantic_version }}
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup variables
         id: variables
@@ -94,7 +94,7 @@ jobs:
             os: ubuntu-latest
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build
         uses: ./.github/actions/build
@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup node
         uses: actions/setup-node@v5
@@ -131,7 +131,7 @@ jobs:
         run: yarn build --env production
 
       - name: Publish UI Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build_ui
           path: _output/UI/**/*
@@ -156,7 +156,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Test
         uses: ./.github/actions/testing
@@ -175,7 +175,7 @@ jobs:
         postgres-version: [16, 17, 18]
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Test
         uses: ./.github/actions/testing
@@ -214,7 +214,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Test
         uses: ./.github/actions/testing
@@ -254,7 +254,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Package
         uses: ./.github/actions/package
@@ -279,7 +279,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Check out
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Release
         uses: ./.github/actions/release
