@@ -95,6 +95,11 @@ namespace NzbDrone.Host
             })
             .AddControllersAsServices();
 
+            services.ConfigureHttpJsonOptions(options =>
+            {
+                STJson.ApplySerializerSettings(options.SerializerOptions);
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v3", new OpenApiInfo
