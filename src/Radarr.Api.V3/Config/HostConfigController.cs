@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Common.Network;
@@ -124,7 +125,7 @@ namespace Radarr.Api.V3.Config
         }
 
         [RestPutById]
-        public ActionResult<HostConfigResource> SaveHostConfig([FromBody] HostConfigResource resource)
+        public Results<Accepted<HostConfigResource>, NotFound> SaveHostConfig([FromBody] HostConfigResource resource)
         {
             resource.TrustedNetworks = IPNetworkParser.NormalizeList(resource.TrustedNetworks);
 

@@ -5,6 +5,8 @@ using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Movies;
@@ -26,7 +28,7 @@ namespace Radarr.Api.V3.Calendar
         }
 
         [HttpGet("Radarr.ics")]
-        public IActionResult GetCalendarFeed(int pastDays = 7, int futureDays = 28, string tags = "", bool unmonitored = false, IReadOnlyCollection<CalendarReleaseType> releaseTypes = null)
+        public Results<ContentHttpResult, NoContent> GetCalendarFeed(int pastDays = 7, int futureDays = 28, string tags = "", bool unmonitored = false, IReadOnlyCollection<CalendarReleaseType> releaseTypes = null)
         {
             var start = DateTime.Today.AddDays(-pastDays);
             var end = DateTime.Today.AddDays(futureDays);
@@ -73,7 +75,7 @@ namespace Radarr.Api.V3.Calendar
             var serializer = (IStringSerializer)new SerializerFactory().Build(calendar.GetType(), new SerializationContext());
             var icalendar = serializer.SerializeToString(calendar);
 
-            return Content(icalendar, "text/calendar");
+            return TypedResults.Content(icalendar, "text/calendar");
         }
 
         private void CreateEvent(Ical.Net.Calendar calendar, MovieMetadata movie, string releaseType)
