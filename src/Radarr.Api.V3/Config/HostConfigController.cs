@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Authentication;
@@ -111,7 +112,7 @@ namespace Radarr.Api.V3.Config
         }
 
         [RestPutById]
-        public ActionResult<HostConfigResource> SaveHostConfig([FromBody] HostConfigResource resource)
+        public Results<Accepted<HostConfigResource>, NotFound> SaveHostConfig([FromBody] HostConfigResource resource)
         {
             var dictionary = resource.GetType()
                                      .GetProperties(BindingFlags.Instance | BindingFlags.Public)
