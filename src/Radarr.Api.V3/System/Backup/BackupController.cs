@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Common.Crypto;
 using NzbDrone.Common.Disk;
@@ -32,11 +34,12 @@ namespace Radarr.Api.V3.System.Backup
         }
 
         [HttpGet]
-        public List<BackupResource> GetBackupFiles()
+        [Produces("application/json")]
+        public Ok<List<BackupResource>> GetBackupFiles()
         {
             var backups = _backupService.GetBackups();
 
-            return backups.Select(b => new BackupResource
+            return TypedResults.Ok(backups.Select(b => new BackupResource
                 {
                     Id = GetBackupId(b),
                     Name = b.Name,
@@ -46,11 +49,11 @@ namespace Radarr.Api.V3.System.Backup
                     Time = b.Time
                 })
                 .OrderByDescending(b => b.Time)
-                .ToList();
+                .ToList());
         }
 
         [RestDeleteById]
-        public object DeleteBackup(int id)
+        public Results<Ok<object>, NotFound> DeleteBackup(int id)
         {
             var backup = GetBackup(id);
 
@@ -68,11 +71,12 @@ namespace Radarr.Api.V3.System.Backup
 
             _diskProvider.DeleteFile(path);
 
-            return new { };
+            return TypedResults.Ok<object>(new { });
         }
 
         [HttpPost("restore/{id:int}")]
-        public object Restore([FromRoute] int id)
+        [Produces("application/json")]
+        public Results<Ok<object>, NotFound> Restore([FromRoute] int id)
         {
             var backup = GetBackup(id);
 
@@ -85,15 +89,13 @@ namespace Radarr.Api.V3.System.Backup
 
             _backupService.Restore(path);
 
-            return new
-            {
-                RestartRequired = true
-            };
+            return TypedResults.Ok<object>(new { RestartRequired = true });
         }
 
         [HttpPost("restore/upload")]
+        [Produces("application/json")]
         [RequestFormLimits(MultipartBodyLengthLimit = 5000000000)]
-        public object UploadAndRestore()
+        public Results<Ok<object>, BadRequest> UploadAndRestore()
         {
             var files = Request.Form.Files;
 
@@ -118,10 +120,7 @@ namespace Radarr.Api.V3.System.Backup
             // Cleanup restored file
             _diskProvider.DeleteFile(path);
 
-            return new
-            {
-                RestartRequired = true
-            };
+            return TypedResults.Ok<object>(new { RestartRequired = true });
         }
 
         private string GetBackupPath(NzbDrone.Core.Backup.Backup backup)
