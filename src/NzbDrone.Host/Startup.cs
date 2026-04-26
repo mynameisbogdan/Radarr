@@ -98,6 +98,10 @@ namespace NzbDrone.Host
             services.ConfigureHttpJsonOptions(options =>
             {
                 STJson.ApplySerializerSettings(options.SerializerOptions);
+
+#if !DEBUG
+                options.SerializerOptions.WriteIndented = false;
+#endif
             });
 
             services.AddSwaggerGen(c =>
