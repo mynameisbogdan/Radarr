@@ -6,18 +6,18 @@ import createMovieQueueItemsDetailsSelector, {
   MovieQueueDetails,
 } from 'Movie/Index/createMovieQueueDetailsSelector';
 import { MovieStatus } from 'Movie/Movie';
-import { MovieFile } from 'MovieFile/MovieFile';
+import Quality from 'Quality/Quality';
 import getProgressBarKind from 'Utilities/Movie/getProgressBarKind';
 import translate from 'Utilities/String/translate';
 import styles from './MovieIndexProgressBar.css';
 
 interface MovieIndexProgressBarProps {
   movieId: number;
-  movieFile?: MovieFile;
   monitored: boolean;
   status: MovieStatus;
   hasFile: boolean;
   isAvailable: boolean;
+  movieFileQualities: Quality[];
   width: number;
   detailedProgressBar: boolean;
   bottomRadius?: boolean;
@@ -26,11 +26,11 @@ interface MovieIndexProgressBarProps {
 
 function MovieIndexProgressBar({
   movieId,
-  movieFile,
   monitored,
   status,
   hasFile,
   isAvailable,
+  movieFileQualities = [],
   width,
   detailedProgressBar,
   bottomRadius,
@@ -46,7 +46,9 @@ function MovieIndexProgressBar({
 
   let movieStatus = translate('NotAvailable');
   if (hasFile) {
-    movieStatus = movieFile?.quality?.quality.name ?? translate('Downloaded');
+    movieStatus =
+      movieFileQualities?.map(({ name }) => name).join(', ') ??
+      translate('Downloaded');
   } else if (status === 'deleted') {
     movieStatus = translate('Deleted');
   } else if (isAvailable && !hasFile) {

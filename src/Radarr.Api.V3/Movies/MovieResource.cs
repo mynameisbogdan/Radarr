@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using NzbDrone.Common.Extensions;
-using NzbDrone.Core.CustomFormats;
-using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.Languages;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.Movies;
@@ -99,14 +97,12 @@ namespace Radarr.Api.V3.Movies
 
     public static class MovieResourceMapper
     {
-        public static MovieResource ToResource(this Movie model, MovieTranslation movieTranslation = null, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
+        public static MovieResource ToResource(this Movie model, MovieTranslation movieTranslation = null)
         {
             if (model == null)
             {
                 return null;
             }
-
-            var movieFile = model.MovieFile?.ToResource(model, upgradableSpecification, formatCalculationService);
 
             var translatedTitle = movieTranslation?.Title ?? model.Title;
             var translatedOverview = movieTranslation?.Overview ?? model.MovieMetadata.Value.Overview;
@@ -159,7 +155,6 @@ namespace Radarr.Api.V3.Movies
                 AddOptions = model.AddOptions,
                 AlternateTitles = model.MovieMetadata.Value.AlternativeTitles.ToResource(),
                 Ratings = model.MovieMetadata.Value.Ratings,
-                MovieFile = movieFile,
                 YouTubeTrailerId = model.MovieMetadata.Value.YouTubeTrailerId,
                 Studio = model.MovieMetadata.Value.Studio,
                 Collection = collection,
@@ -225,9 +220,9 @@ namespace Radarr.Api.V3.Movies
             return movie;
         }
 
-        public static List<MovieResource> ToResource(this IEnumerable<Movie> movies, IUpgradableSpecification upgradableSpecification = null, ICustomFormatCalculationService formatCalculationService = null)
+        public static List<MovieResource> ToResource(this IEnumerable<Movie> movies)
         {
-            return movies.Select(movie => ToResource(movie, null, upgradableSpecification, formatCalculationService)).ToList();
+            return movies.Select(movie => movie.ToResource()).ToList();
         }
 
         public static List<Movie> ToModel(this IEnumerable<MovieResource> resources)

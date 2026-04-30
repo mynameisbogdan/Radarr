@@ -1,6 +1,5 @@
 import ModelBase from 'App/ModelBase';
 import Language from 'Language/Language';
-import { MovieFile } from 'MovieFile/MovieFile';
 import Quality from 'Quality/Quality';
 
 export type MovieMonitor = 'movieOnly' | 'movieAndCollection' | 'none';
@@ -92,7 +91,6 @@ interface Movie extends ModelBase {
   tags: number[];
   images: Image[];
   movieFileId: number;
-  movieFile?: MovieFile;
   hasFile: boolean;
   grabbed?: boolean;
   lastSearchTime?: string;

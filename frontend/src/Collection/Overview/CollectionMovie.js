@@ -68,10 +68,10 @@ class CollectionMovie extends Component {
       tmdbId,
       images,
       monitored,
-      hasFile,
       folder,
+      statistics = {},
+      hasFile,
       isAvailable,
-      movieFile,
       isExistingMovie,
       isExcluded,
       posterWidth,
@@ -80,6 +80,10 @@ class CollectionMovie extends Component {
       onMonitorTogglePress,
       collectionId
     } = this.props;
+
+    const {
+      movieFileQualities = []
+    } = statistics;
 
     const {
       hasPosterError,
@@ -151,14 +155,14 @@ class CollectionMovie extends Component {
                 id ?
                   <MovieIndexProgressBar
                     movieId={id}
-                    movieFile={movieFile}
                     monitored={monitored}
-                    hasFile={hasFile}
                     status={status}
-                    bottomRadius={true}
-                    width={posterWidth}
-                    detailedProgressBar={detailedProgressBar}
+                    hasFile={hasFile}
                     isAvailable={isAvailable}
+                    movieFileQualities={movieFileQualities}
+                    width={posterWidth}
+                    bottomRadius={true}
+                    detailedProgressBar={detailedProgressBar}
                   /> :
                   null
               }
@@ -197,10 +201,10 @@ CollectionMovie.propTypes = {
   overview: PropTypes.string,
   monitored: PropTypes.bool,
   collectionId: PropTypes.number.isRequired,
-  hasFile: PropTypes.bool,
   folder: PropTypes.string,
+  statistics: PropTypes.object,
+  hasFile: PropTypes.bool,
   isAvailable: PropTypes.bool,
-  movieFile: PropTypes.object,
   images: PropTypes.arrayOf(PropTypes.object).isRequired,
   posterWidth: PropTypes.number.isRequired,
   posterHeight: PropTypes.number.isRequired,
@@ -211,6 +215,10 @@ CollectionMovie.propTypes = {
   imdbId: PropTypes.string,
   youTubeTrailerId: PropTypes.string,
   onMonitorTogglePress: PropTypes.func.isRequired
+};
+
+CollectionMovie.defaultProps = {
+  hasFile: false
 };
 
 export default CollectionMovie;

@@ -31,7 +31,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Specifications
 
             if (localMovie.Movie.MovieFileId > 0)
             {
-                var movieFile = localMovie.Movie.MovieFile;
+                var movieFile = localMovie.Movie.MovieFile.Value;
 
                 if (movieFile == null)
                 {

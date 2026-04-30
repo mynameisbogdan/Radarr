@@ -10,6 +10,7 @@ using NzbDrone.Core.Languages;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.MetadataSource;
 using NzbDrone.Core.Movies;
+using NzbDrone.Core.MovieStats;
 using NzbDrone.Core.Organizer;
 using Radarr.Http;
 using Radarr.Http.REST;
@@ -24,6 +25,7 @@ namespace Radarr.Api.V3.Movies
         private readonly IBuildFileNames _fileNameBuilder;
         private readonly INamingConfigService _namingService;
         private readonly IMapCoversToLocal _coverMapper;
+        private readonly IMovieStatisticsService _movieStatisticsService;
         private readonly IConfigService _configService;
         private readonly IImportListExclusionService _importListExclusionService;
 
@@ -32,6 +34,7 @@ namespace Radarr.Api.V3.Movies
                                  IBuildFileNames fileNameBuilder,
                                  INamingConfigService namingService,
                                  IMapCoversToLocal coverMapper,
+                                 IMovieStatisticsService movieStatisticsService,
                                  IConfigService configService,
                                  IImportListExclusionService importListExclusionService)
         {
@@ -40,6 +43,7 @@ namespace Radarr.Api.V3.Movies
             _fileNameBuilder = fileNameBuilder;
             _namingService = namingService;
             _coverMapper = coverMapper;
+            _movieStatisticsService = movieStatisticsService;
             _configService = configService;
             _importListExclusionService = importListExclusionService;
         }
@@ -96,6 +100,8 @@ namespace Radarr.Api.V3.Movies
                 var translation = currentMovie.MovieMetadata.Value.Translations.FirstOrDefault(t => t.Language == movieInfoLanguage);
                 var resource = currentMovie.ToResource(translation);
 
+                FetchAndLinkMovieStatistics(resource);
+
                 _coverMapper.ConvertToLocalUrls(resource.Id, resource.Images);
 
                 var poster = currentMovie.MovieMetadata.Value.Images.FirstOrDefault(c => c.CoverType == MediaCoverTypes.Poster);
@@ -110,6 +116,22 @@ namespace Radarr.Api.V3.Movies
 
                 yield return resource;
             }
+        }
+
+        private void FetchAndLinkMovieStatistics(MovieResource resource)
+        {
+            if (resource.Id == 0)
+            {
+                return;
+            }
+
+            LinkMovieStatistics(resource, _movieStatisticsService.MovieStatistics(resource.Id));
+        }
+
+        private void LinkMovieStatistics(MovieResource resource, MovieStatistics movieStatistics)
+        {
+            resource.Statistics = movieStatistics.ToResource();
+            resource.HasFile = movieStatistics.MovieFileCount > 0;
         }
     }
 }

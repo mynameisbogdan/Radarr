@@ -81,7 +81,6 @@ function MovieIndexRow(props: MovieIndexRowProps) {
     imdbId,
     isAvailable,
     hasFile,
-    movieFile,
     youTubeTrailerId,
     isSaving = false,
   } = movie;
@@ -363,11 +362,11 @@ function MovieIndexRow(props: MovieIndexRowProps) {
             <VirtualTableRowCell key={name} className={styles[name]}>
               <MovieIndexProgressBar
                 movieId={movieId}
-                movieFile={movieFile}
                 monitored={monitored}
+                status={status}
                 hasFile={hasFile}
                 isAvailable={isAvailable}
-                status={status}
+                movieFileQualities={movieFileQualities}
                 width={125}
                 detailedProgressBar={true}
                 bottomRadius={false}

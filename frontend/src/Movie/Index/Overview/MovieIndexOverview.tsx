@@ -81,7 +81,7 @@ function MovieIndexOverview(props: MovieIndexOverviewProps) {
     youTubeTrailerId,
   } = movie;
 
-  const { sizeOnDisk = 0 } = statistics;
+  const { sizeOnDisk = 0, movieFileQualities = [] } = statistics;
 
   const dispatch = useDispatch();
   const [isEditMovieModalOpen, setIsEditMovieModalOpen] = useState(false);
@@ -164,10 +164,10 @@ function MovieIndexOverview(props: MovieIndexOverviewProps) {
 
           <MovieIndexProgressBar
             movieId={movieId}
-            movieFile={movie.movieFile}
             monitored={monitored}
             hasFile={hasFile}
             isAvailable={isAvailable}
+            movieFileQualities={movieFileQualities}
             status={status}
             width={posterWidth}
             detailedProgressBar={overviewOptions.detailedProgressBar}

@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Core.Configuration;
-using NzbDrone.Core.CustomFormats;
 using NzbDrone.Core.Datastore.Events;
-using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.Download;
 using NzbDrone.Core.Languages;
 using NzbDrone.Core.MediaCover;
@@ -26,16 +24,12 @@ namespace Radarr.Api.V3.Movies
         protected readonly IMovieService _movieService;
         protected readonly IMovieTranslationService _movieTranslationService;
         protected readonly IMovieStatisticsService _movieStatisticsService;
-        protected readonly IUpgradableSpecification _upgradableSpecification;
-        protected readonly ICustomFormatCalculationService _formatCalculator;
         protected readonly IConfigService _configService;
         protected readonly IMapCoversToLocal _coverMapper;
 
         protected MovieControllerWithSignalR(IMovieService movieService,
                                            IMovieTranslationService movieTranslationService,
                                            IMovieStatisticsService movieStatisticsService,
-                                           IUpgradableSpecification upgradableSpecification,
-                                           ICustomFormatCalculationService formatCalculator,
                                            IConfigService configService,
                                            IMapCoversToLocal coverMapper,
                                            IBroadcastSignalRMessage signalRBroadcaster)
@@ -44,22 +38,16 @@ namespace Radarr.Api.V3.Movies
             _movieService = movieService;
             _movieTranslationService = movieTranslationService;
             _movieStatisticsService = movieStatisticsService;
-            _upgradableSpecification = upgradableSpecification;
-            _formatCalculator = formatCalculator;
             _configService = configService;
             _coverMapper = coverMapper;
         }
 
         protected MovieControllerWithSignalR(IMovieService movieService,
-                                           IUpgradableSpecification upgradableSpecification,
-                                           ICustomFormatCalculationService formatCalculator,
                                            IBroadcastSignalRMessage signalRBroadcaster,
                                            string resource)
             : base(signalRBroadcaster)
         {
             _movieService = movieService;
-            _upgradableSpecification = upgradableSpecification;
-            _formatCalculator = formatCalculator;
         }
 
         protected override MovieResource GetResourceById(int id)
@@ -81,7 +69,7 @@ namespace Radarr.Api.V3.Movies
             var translations = _movieTranslationService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId);
             var translation = GetMovieTranslation(translations, movie.MovieMetadata, language);
 
-            var resource = movie.ToResource(translation, _upgradableSpecification, _formatCalculator);
+            var resource = movie.ToResource(translation);
             FetchAndLinkMovieStatistics(resource);
 
             _coverMapper.ConvertToLocalUrls(resource.Id, resource.Images);
@@ -104,7 +92,7 @@ namespace Radarr.Api.V3.Movies
                 var translations = _movieTranslationService.GetAllTranslationsForMovieMetadata(movie.MovieMetadataId);
                 var translation = GetMovieTranslation(translations, movie.MovieMetadata, language);
 
-                var resource = movie.ToResource(translation, _upgradableSpecification, _formatCalculator);
+                var resource = movie.ToResource(translation);
                 FetchAndLinkMovieStatistics(resource);
 
                 resources.Add(resource);
@@ -151,13 +139,13 @@ namespace Radarr.Api.V3.Movies
         [NonAction]
         public void Handle(MovieFileImportedEvent message)
         {
-            BroadcastResourceChange(ModelAction.Updated, message.ImportedMovie.Movie.Id);
+            BroadcastResourceChange(ModelAction.Updated, message.ImportedMovie.MovieId);
         }
 
         [NonAction]
         public void Handle(MovieFileDeletedEvent message)
         {
-            BroadcastResourceChange(ModelAction.Updated, message.MovieFile.Movie.Id);
+            BroadcastResourceChange(ModelAction.Updated, message.MovieFile.MovieId);
         }
     }
 }

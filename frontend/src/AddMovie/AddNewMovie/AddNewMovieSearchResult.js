@@ -75,18 +75,21 @@ class AddNewMovieSearchResult extends Component {
       isExcluded,
       isSmallScreen,
       monitored,
+      statistics = {},
       isAvailable,
-      movieFile,
+      hasFile,
       runtime,
       movieRuntimeFormat,
       certification
     } = this.props;
 
     const {
+      movieFileQualities = []
+    } = statistics;
+
+    const {
       isNewAddMovieModalOpen
     } = this.state;
-
-    const hasMovieFile = !!movieFile;
 
     const linkProps = isExistingMovie ? { to: `/movie/${titleSlug}` } : { onPress: this.onPress };
     const posterWidth = 167;
@@ -124,13 +127,13 @@ class AddNewMovieSearchResult extends Component {
                   isExistingMovie &&
                     <MovieIndexProgressBar
                       movieId={existingMovieId}
-                      movieFile={movieFile}
                       monitored={monitored}
-                      hasFile={hasMovieFile}
                       status={status}
+                      hasFile={hasFile}
+                      isAvailable={isAvailable}
+                      movieFileQualities={movieFileQualities}
                       width={posterWidth}
                       detailedProgressBar={true}
-                      isAvailable={isAvailable}
                     />
                 }
               </div>
@@ -285,7 +288,7 @@ class AddNewMovieSearchResult extends Component {
                     movieId={existingMovieId}
                     monitored={monitored}
                     isAvailable={isAvailable}
-                    hasMovieFiles={hasMovieFile}
+                    hasMovieFiles={hasFile}
                     status={status}
                     useLabel={true}
                   />
@@ -333,8 +336,9 @@ AddNewMovieSearchResult.propTypes = {
   isExcluded: PropTypes.bool,
   isSmallScreen: PropTypes.bool.isRequired,
   monitored: PropTypes.bool.isRequired,
+  hasFile: PropTypes.bool.isRequired,
   isAvailable: PropTypes.bool.isRequired,
-  movieFile: PropTypes.object,
+  statistics: PropTypes.object,
   runtime: PropTypes.number.isRequired,
   movieRuntimeFormat: PropTypes.string.isRequired,
   certification: PropTypes.string
@@ -342,7 +346,8 @@ AddNewMovieSearchResult.propTypes = {
 
 AddNewMovieSearchResult.defaultProps = {
   genres: [],
-  isExcluded: false
+  isExcluded: false,
+  hasFile: false
 };
 
 export default AddNewMovieSearchResult;

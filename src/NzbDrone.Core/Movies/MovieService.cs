@@ -438,7 +438,7 @@ namespace NzbDrone.Core.Movies
 
         public void Handle(MovieFileAddedEvent message)
         {
-            var movie = message.MovieFile.Movie;
+            var movie = message.MovieFile.Movie.Value;
             movie.MovieFileId = message.MovieFile.Id;
             _movieRepository.Update(movie);
 

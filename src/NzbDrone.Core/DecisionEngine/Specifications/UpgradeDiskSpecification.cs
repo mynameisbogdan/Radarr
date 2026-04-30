@@ -27,7 +27,7 @@ namespace NzbDrone.Core.DecisionEngine.Specifications
         {
             var qualityProfile = subject.Movie.QualityProfile;
 
-            var file = subject.Movie.MovieFile;
+            var file = subject.Movie.MovieFile.Value;
 
             if (file == null)
             {

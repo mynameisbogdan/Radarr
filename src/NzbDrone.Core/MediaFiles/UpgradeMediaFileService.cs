@@ -39,7 +39,7 @@ namespace NzbDrone.Core.MediaFiles
 
             var moveFileResult = new MovieFileMoveResult();
 
-            var existingFile = localMovie.Movie.MovieFileId > 0 ? localMovie.Movie.MovieFile : null;
+            var existingFile = localMovie.Movie.MovieFileId > 0 ? localMovie.Movie.MovieFile.Value : null;
 
             var rootFolder = _diskProvider.GetParentFolder(localMovie.Movie.Path);
 

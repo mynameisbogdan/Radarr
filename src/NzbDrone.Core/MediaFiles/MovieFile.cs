@@ -24,7 +24,7 @@ namespace NzbDrone.Core.MediaFiles
         public IndexerFlags IndexerFlags { get; set; }
         public MediaInfoModel MediaInfo { get; set; }
         public string Edition { get; set; }
-        public Movie Movie { get; set; }
+        public LazyLoaded<Movie> Movie { get; set; }
         public List<Language> Languages { get; set; }
 
         public override string ToString()

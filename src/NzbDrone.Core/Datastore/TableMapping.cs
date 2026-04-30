@@ -111,6 +111,7 @@ namespace NzbDrone.Core.Datastore
             Mapper.Entity<MovieHistory>("History").RegisterModel();
 
             Mapper.Entity<MovieFile>("MovieFiles").RegisterModel()
+                  .HasOne(f => f.Movie, f => f.MovieId)
                   .Ignore(f => f.Path);
 
             Mapper.Entity<Movie>("Movies").RegisterModel()
@@ -119,7 +120,8 @@ namespace NzbDrone.Core.Datastore
                   .Ignore(s => s.Year)
                   .Ignore(s => s.TmdbId)
                   .Ignore(s => s.ImdbId)
-                  .HasOne(a => a.MovieMetadata, a => a.MovieMetadataId);
+                  .HasOne(a => a.MovieMetadata, a => a.MovieMetadataId)
+                  .HasOne(s => s.MovieFile, s => s.MovieFileId);
 
             Mapper.Entity<ImportListMovie>("ImportListMovies").RegisterModel()
                   .Ignore(s => s.Title)

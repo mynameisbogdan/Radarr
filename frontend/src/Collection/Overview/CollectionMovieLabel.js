@@ -67,14 +67,12 @@ CollectionMovieLabel.propTypes = {
   monitored: PropTypes.bool,
   hasFile: PropTypes.bool,
   isSaving: PropTypes.bool.isRequired,
-  movieFile: PropTypes.object,
-  movieFileId: PropTypes.number,
   onMonitorTogglePress: PropTypes.func.isRequired
 };
 
 CollectionMovieLabel.defaultProps = {
   isSaving: false,
-  statistics: {}
+  hasFile: false
 };
 
 export default CollectionMovieLabel;

@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Core.Configuration;
-using NzbDrone.Core.CustomFormats;
 using NzbDrone.Core.Datastore;
-using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.Movies;
 using NzbDrone.Core.Movies.Translations;
@@ -24,12 +22,10 @@ namespace Radarr.Api.V3.Wanted
         public MissingController(IMovieService movieService,
                             IMovieTranslationService movieTranslationService,
                             IMovieStatisticsService movieStatisticsService,
-                            IUpgradableSpecification upgradableSpecification,
-                            ICustomFormatCalculationService formatCalculator,
                             IConfigService configService,
                             IMapCoversToLocal coverMapper,
                             IBroadcastSignalRMessage signalRBroadcaster)
-            : base(movieService, movieTranslationService, movieStatisticsService, upgradableSpecification, formatCalculator, configService, coverMapper, signalRBroadcaster)
+            : base(movieService, movieTranslationService, movieStatisticsService, configService, coverMapper, signalRBroadcaster)
         {
         }
 

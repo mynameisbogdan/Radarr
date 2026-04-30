@@ -131,7 +131,7 @@ namespace NzbDrone.Core.MediaFiles
         {
             if (_configService.DeleteEmptyFolders)
             {
-                var movie = message.MovieFile.Movie;
+                var movie = message.MovieFile.Movie.Value;
                 var moviePath = movie.Path;
                 var folder = message.MovieFile.Path.GetParentPath();
 

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Configuration;
-using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.Languages;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.Messaging.Commands;
@@ -26,15 +25,13 @@ namespace Radarr.Api.V3.Movies
         private readonly IConfigService _configService;
         private readonly IManageCommandQueue _commandQueueManager;
         private readonly MovieEditorValidator _movieEditorValidator;
-        private readonly IUpgradableSpecification _upgradableSpecification;
 
         public MovieEditorController(IMovieService movieService,
             IMovieTranslationService movieTranslationService,
             IMapCoversToLocal coverMapper,
             IConfigService configService,
             IManageCommandQueue commandQueueManager,
-            MovieEditorValidator movieEditorValidator,
-            IUpgradableSpecification upgradableSpecification)
+            MovieEditorValidator movieEditorValidator)
         {
             _movieService = movieService;
             _movieTranslationService = movieTranslationService;
@@ -42,7 +39,6 @@ namespace Radarr.Api.V3.Movies
             _configService = configService;
             _commandQueueManager = commandQueueManager;
             _movieEditorValidator = movieEditorValidator;
-            _upgradableSpecification = upgradableSpecification;
         }
 
         [HttpPut]
@@ -128,7 +124,7 @@ namespace Radarr.Api.V3.Movies
             foreach (var movie in updatedMovies)
             {
                 var translation = GetTranslationFromDict(tdict, movie.MovieMetadata, configLanguage);
-                var movieResource = movie.ToResource(translation, _upgradableSpecification);
+                var movieResource = movie.ToResource(translation);
 
                 MapCoversToLocal(movieResource);
 

@@ -29,7 +29,7 @@ namespace NzbDrone.Core.DecisionEngine.Specifications
 
             if (subject.Movie.MovieFileId != 0)
             {
-                var file = subject.Movie.MovieFile;
+                var file = subject.Movie.MovieFile.Value;
 
                 if (file == null)
                 {

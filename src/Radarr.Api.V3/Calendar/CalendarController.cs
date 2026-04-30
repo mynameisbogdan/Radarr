@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Common.Extensions;
 using NzbDrone.Core.Configuration;
-using NzbDrone.Core.CustomFormats;
-using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.Movies;
 using NzbDrone.Core.Movies.Translations;
@@ -29,12 +27,10 @@ namespace Radarr.Api.V3.Calendar
                             IMovieService movieService,
                             IMovieTranslationService movieTranslationService,
                             IMovieStatisticsService movieStatisticsService,
-                            IUpgradableSpecification upgradableSpecification,
-                            ICustomFormatCalculationService formatCalculator,
                             ITagService tagService,
                             IMapCoversToLocal coverMapper,
                             IConfigService configService)
-            : base(movieService, movieTranslationService, movieStatisticsService, upgradableSpecification, formatCalculator, configService, coverMapper, signalR)
+            : base(movieService, movieTranslationService, movieStatisticsService, configService, coverMapper, signalR)
         {
             _moviesService = movieService;
             _tagService = tagService;

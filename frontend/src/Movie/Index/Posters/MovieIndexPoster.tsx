@@ -83,7 +83,6 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
     digitalRelease,
     releaseDate,
     path,
-    movieFile,
     ratings,
     statistics = {} as Statistics,
     certification,
@@ -92,7 +91,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
     tags = [],
   } = movie;
 
-  const { sizeOnDisk = 0 } = statistics;
+  const { sizeOnDisk = 0, movieFileQualities = [] } = statistics;
 
   const dispatch = useDispatch();
   const [hasPosterError, setHasPosterError] = useState(false);
@@ -218,7 +217,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
 
       <MovieIndexProgressBar
         movieId={movieId}
-        movieFile={movieFile}
+        movieFileQualities={movieFileQualities}
         monitored={monitored}
         hasFile={hasFile}
         isAvailable={isAvailable}

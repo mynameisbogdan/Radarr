@@ -32,7 +32,7 @@ namespace NzbDrone.Core.Movies
         public HashSet<int> Tags { get; set; }
         public AddMovieOptions AddOptions { get; set; }
         public DateTime? LastSearchTime { get; set; }
-        public MovieFile MovieFile { get; set; }
+        public LazyLoaded<MovieFile> MovieFile { get; set; }
         public int MovieFileId { get; set; }
 
         public bool HasFile => MovieFileId > 0;

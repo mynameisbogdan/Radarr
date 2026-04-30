@@ -70,7 +70,7 @@ namespace NzbDrone.Core.MediaFiles
                 movieFile.Movie = _movieRepository.Get(movieFile.MovieId);
             }
 
-            movieFile.Path = Path.Combine(movieFile.Movie.Path, movieFile.RelativePath);
+            movieFile.Path = Path.Combine(movieFile.Movie.Value.Path, movieFile.RelativePath);
 
             _mediaFileRepository.Delete(movieFile);
             _eventAggregator.PublishEvent(new MovieFileDeletedEvent(movieFile, reason));
