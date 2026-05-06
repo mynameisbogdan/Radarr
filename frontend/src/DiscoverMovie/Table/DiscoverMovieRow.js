@@ -5,6 +5,7 @@ import ImdbRating from 'Components/ImdbRating';
 import ImportListList from 'Components/ImportListList';
 import IconButton from 'Components/Link/IconButton';
 import Link from 'Components/Link/Link';
+import MetacriticRating from 'Components/MetacriticRating';
 import RottenTomatoRating from 'Components/RottenTomatoRating';
 import RelativeDateCell from 'Components/Table/Cells/RelativeDateCell';
 import VirtualTableRowCell from 'Components/Table/Cells/VirtualTableRowCell';
@@ -285,6 +286,17 @@ class DiscoverMovieRow extends Component {
                   className={styles[name]}
                 >
                   {ratings.imdb ? <ImdbRating ratings={ratings} /> : null}
+                </VirtualTableRowCell>
+              );
+            }
+
+            if (name === 'metacriticRating') {
+              return (
+                <VirtualTableRowCell
+                  key={name}
+                  className={styles[name]}
+                >
+                  {ratings.metacritic ? <MetacriticRating ratings={ratings} /> : null}
                 </VirtualTableRowCell>
               );
             }
