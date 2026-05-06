@@ -39,6 +39,7 @@ export const defaultState = {
     showReleaseDate: false,
     showTmdbRating: false,
     showImdbRating: false,
+    showMetacriticRating: false,
     showRottenTomatoesRating: false,
     showTraktRating: false,
     showTags: false,
@@ -202,6 +203,12 @@ export const defaultState = {
     {
       name: 'imdbRating',
       label: () => translate('ImdbRating'),
+      isSortable: true,
+      isVisible: false
+    },
+    {
+      name: 'metacriticRating',
+      label: () => translate('MetacriticRating'),
       isSortable: true,
       isVisible: false
     },
@@ -529,6 +536,11 @@ export const defaultState = {
     {
       name: 'imdbVotes',
       label: () => translate('ImdbVotes'),
+      type: filterBuilderTypes.NUMBER
+    },
+    {
+      name: 'metacriticRating',
+      label: () => translate('MetacriticRating'),
       type: filterBuilderTypes.NUMBER
     },
     {
