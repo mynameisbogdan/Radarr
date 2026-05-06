@@ -99,6 +99,7 @@
 
 .imdbRating,
 .tmdbRating,
+.metacriticRating,
 .rottenTomatoesRating,
 .traktRating {
   composes: cell;
