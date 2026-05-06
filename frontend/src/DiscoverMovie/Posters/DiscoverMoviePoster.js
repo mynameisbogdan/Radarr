@@ -6,6 +6,7 @@ import ImdbRating from 'Components/ImdbRating';
 import Label from 'Components/Label';
 import IconButton from 'Components/Link/IconButton';
 import Link from 'Components/Link/Link';
+import MetacriticRating from 'Components/MetacriticRating';
 import RottenTomatoRating from 'Components/RottenTomatoRating';
 import TmdbRating from 'Components/TmdbRating';
 import Popover from 'Components/Tooltip/Popover';
@@ -92,6 +93,7 @@ class DiscoverMoviePoster extends Component {
       showTitle,
       showTmdbRating,
       showImdbRating,
+      showMetacriticRating,
       showRottenTomatoesRating,
       showTraktRating,
       ratings,
@@ -220,6 +222,12 @@ class DiscoverMoviePoster extends Component {
           </div>
         ) : null}
 
+        {showMetacriticRating && !!ratings.metacritic ? (
+          <div className={styles.title}>
+            <MetacriticRating ratings={ratings} iconSize={12} />
+          </div>
+        ) : null}
+
         {showRottenTomatoesRating && !!ratings.rottenTomatoes ? (
           <div className={styles.title}>
             <RottenTomatoRating ratings={ratings} iconSize={12} />
@@ -241,6 +249,7 @@ class DiscoverMoviePoster extends Component {
           popularity={popularity}
           showTmdbRating={showTmdbRating}
           showImdbRating={showImdbRating}
+          showMetacriticRating={showMetacriticRating}
           showRottenTomatoesRating={showRottenTomatoesRating}
           showTraktRating={showTraktRating}
           {...otherProps}
@@ -284,6 +293,7 @@ DiscoverMoviePoster.propTypes = {
   showTitle: PropTypes.bool.isRequired,
   showTmdbRating: PropTypes.bool.isRequired,
   showImdbRating: PropTypes.bool.isRequired,
+  showMetacriticRating: PropTypes.bool.isRequired,
   showRottenTomatoesRating: PropTypes.bool.isRequired,
   showTraktRating: PropTypes.bool.isRequired,
   ratings: PropTypes.object.isRequired,
