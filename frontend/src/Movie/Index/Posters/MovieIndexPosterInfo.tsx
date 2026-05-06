@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from 'Components/Icon';
 import ImdbRating from 'Components/ImdbRating';
+import MetacriticRating from 'Components/MetacriticRating';
 import MovieTagList from 'Components/MovieTagList';
 import RottenTomatoRating from 'Components/RottenTomatoRating';
 import TmdbRating from 'Components/TmdbRating';
@@ -46,6 +47,7 @@ interface MovieIndexPosterInfoProps {
   timeFormat: string;
   showTmdbRating: boolean;
   showImdbRating: boolean;
+  showMetacriticRating: boolean;
   showRottenTomatoesRating: boolean;
   showTraktRating: boolean;
   showTags: boolean;
@@ -81,6 +83,7 @@ function MovieIndexPosterInfo(props: MovieIndexPosterInfoProps) {
     timeFormat,
     showTmdbRating,
     showImdbRating,
+    showMetacriticRating,
     showRottenTomatoesRating,
     showTraktRating,
     showTags,
@@ -236,6 +239,18 @@ function MovieIndexPosterInfo(props: MovieIndexPosterInfoProps) {
     return (
       <div className={styles.info}>
         <ImdbRating ratings={ratings} iconSize={12} />
+      </div>
+    );
+  }
+
+  if (
+    !showMetacriticRating &&
+    sortKey === 'metacriticRating' &&
+    !!ratings.metacritic
+  ) {
+    return (
+      <div className={styles.info}>
+        <MetacriticRating ratings={ratings} iconSize={12} />
       </div>
     );
   }
