@@ -17,7 +17,7 @@ import createSetClientSideCollectionFilterReducer from './Creators/Reducers/crea
 import createSetClientSideCollectionSortReducer from './Creators/Reducers/createSetClientSideCollectionSortReducer';
 import createSetSettingValueReducer from './Creators/Reducers/createSetSettingValueReducer';
 import createSetTableOptionReducer from './Creators/Reducers/createSetTableOptionReducer';
-import { filterPredicates } from './movieActions';
+import { filterPredicates, sortPredicates } from './movieActions';
 
 //
 // Variables
@@ -61,6 +61,7 @@ export const defaultState = {
     showTitle: false,
     showTmdbRating: false,
     showImdbRating: false,
+    showMetacriticRating: false,
     showRottenTomatoesRating: false,
     showTraktRating: false
   },
@@ -182,6 +183,12 @@ export const defaultState = {
       isVisible: false
     },
     {
+      name: 'metacriticRating',
+      label: () => translate('MetacriticRating'),
+      isSortable: true,
+      isVisible: false
+    },
+    {
       name: 'rottenTomatoesRating',
       label: () => translate('RottenTomatoesRating'),
       isSortable: true,
@@ -220,6 +227,8 @@ export const defaultState = {
   ],
 
   sortPredicates: {
+    ...sortPredicates,
+
     status: function(item) {
       let result = 0;
 
@@ -476,6 +485,11 @@ export const defaultState = {
     {
       name: 'imdbRating',
       label: () => translate('ImdbRating'),
+      type: filterBuilderTypes.NUMBER
+    },
+    {
+      name: 'metacriticRating',
+      label: () => translate('MetacriticRating'),
       type: filterBuilderTypes.NUMBER
     },
     {

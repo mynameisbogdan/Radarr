@@ -149,6 +149,7 @@ export default function MovieIndexPosters(props: MovieIndexPostersProps) {
       showReleaseDate,
       showTmdbRating,
       showImdbRating,
+      showMetacriticRating,
       showRottenTomatoesRating,
       showTraktRating,
       showTags,
@@ -193,6 +194,10 @@ export default function MovieIndexPosters(props: MovieIndexPostersProps) {
     }
 
     if (showImdbRating) {
+      heights.push(19);
+    }
+
+    if (showMetacriticRating) {
       heights.push(19);
     }
 
@@ -250,6 +255,11 @@ export default function MovieIndexPosters(props: MovieIndexPostersProps) {
         break;
       case 'imdbRating':
         if (!showImdbRating) {
+          heights.push(19);
+        }
+        break;
+      case 'metacriticRating':
+        if (!showMetacriticRating) {
           heights.push(19);
         }
         break;
