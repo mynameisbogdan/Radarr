@@ -7,6 +7,7 @@ import Label from 'Components/Label';
 import IconButton from 'Components/Link/IconButton';
 import Link from 'Components/Link/Link';
 import SpinnerIconButton from 'Components/Link/SpinnerIconButton';
+import MetacriticRating from 'Components/MetacriticRating';
 import MovieTagList from 'Components/MovieTagList';
 import RottenTomatoRating from 'Components/RottenTomatoRating';
 import TmdbRating from 'Components/TmdbRating';
@@ -55,6 +56,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
     showReleaseDate,
     showTmdbRating,
     showImdbRating,
+    showMetacriticRating,
     showRottenTomatoesRating,
     showTraktRating,
     showTags,
@@ -334,6 +336,12 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
         </div>
       ) : null}
 
+      {showMetacriticRating && !!ratings.metacritic ? (
+        <div className={styles.title}>
+          <MetacriticRating ratings={ratings} iconSize={12} />
+        </div>
+      ) : null}
+
       {showRottenTomatoesRating && !!ratings.rottenTomatoes ? (
         <div className={styles.title}>
           <RottenTomatoRating ratings={ratings} iconSize={12} />
@@ -382,6 +390,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
         tags={tags}
         showTmdbRating={showTmdbRating}
         showImdbRating={showImdbRating}
+        showMetacriticRating={showMetacriticRating}
         showRottenTomatoesRating={showRottenTomatoesRating}
         showTraktRating={showTraktRating}
         showTags={showTags}

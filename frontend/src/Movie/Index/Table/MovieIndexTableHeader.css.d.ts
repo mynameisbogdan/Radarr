@@ -10,6 +10,7 @@ interface CssExports {
   'imdbRating': string;
   'inCinemas': string;
   'keywords': string;
+  'metacriticRating': string;
   'minimumAvailability': string;
   'movieFileQualities': string;
   'movieStatus': string;
