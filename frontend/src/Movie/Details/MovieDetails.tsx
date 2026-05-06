@@ -18,6 +18,7 @@ import ImdbRating from 'Components/ImdbRating';
 import InfoLabel from 'Components/InfoLabel';
 import IconButton from 'Components/Link/IconButton';
 import Marquee from 'Components/Marquee';
+import MetacriticRating from 'Components/MetacriticRating';
 import MonitorToggleButton from 'Components/MonitorToggleButton';
 import PageContent from 'Components/Page/PageContent';
 import PageContentBody from 'Components/Page/PageContentBody';
@@ -770,6 +771,11 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
                 {ratings.imdb ? (
                   <span className={styles.rating}>
                     <ImdbRating ratings={ratings} iconSize={20} />
+                  </span>
+                ) : null}
+                {ratings.metacritic ? (
+                  <span className={styles.rating}>
+                    <MetacriticRating ratings={ratings} iconSize={20} />
                   </span>
                 ) : null}
                 {ratings.rottenTomatoes ? (

@@ -39,6 +39,7 @@ function calculateRowHeight(posterHeight, sortKey, isSmallScreen, posterOptions)
     showTitle,
     showTmdbRating,
     showImdbRating,
+    showMetacriticRating,
     showRottenTomatoesRating,
     showTraktRating
   } = posterOptions;
@@ -58,6 +59,10 @@ function calculateRowHeight(posterHeight, sortKey, isSmallScreen, posterOptions)
   }
 
   if (showImdbRating) {
+    heights.push(19);
+  }
+
+  if (showMetacriticRating) {
     heights.push(19);
   }
 
@@ -85,6 +90,11 @@ function calculateRowHeight(posterHeight, sortKey, isSmallScreen, posterOptions)
       break;
     case 'imdbRating':
       if (!showImdbRating) {
+        heights.push(19);
+      }
+      break;
+    case 'metacriticRating':
+      if (!showMetacriticRating) {
         heights.push(19);
       }
       break;
@@ -229,6 +239,7 @@ class DiscoverMoviePosters extends Component {
       showTitle,
       showTmdbRating,
       showImdbRating,
+      showMetacriticRating,
       showRottenTomatoesRating,
       showTraktRating
     } = posterOptions;
@@ -258,6 +269,7 @@ class DiscoverMoviePosters extends Component {
           showTitle={showTitle}
           showTmdbRating={showTmdbRating}
           showImdbRating={showImdbRating}
+          showMetacriticRating={showMetacriticRating}
           showRottenTomatoesRating={showRottenTomatoesRating}
           showTraktRating={showTraktRating}
           showRelativeDates={showRelativeDates}

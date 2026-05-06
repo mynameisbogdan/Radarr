@@ -47,6 +47,7 @@ class DiscoverMoviePosterOptionsModalContent extends Component {
       showTitle: props.showTitle,
       showTmdbRating: props.showTmdbRating,
       showImdbRating: props.showImdbRating,
+      showMetacriticRating: props.showMetacriticRating,
       showRottenTomatoesRating: props.showRottenTomatoesRating,
       showTraktRating: props.showTraktRating,
       includeRecommendations: props.includeRecommendations,
@@ -61,6 +62,7 @@ class DiscoverMoviePosterOptionsModalContent extends Component {
       showTitle,
       showTmdbRating,
       showImdbRating,
+      showMetacriticRating,
       showRottenTomatoesRating,
       showTraktRating,
       includeRecommendations,
@@ -84,6 +86,10 @@ class DiscoverMoviePosterOptionsModalContent extends Component {
 
     if (showImdbRating !== prevProps.showImdbRating) {
       state.showImdbRating = showImdbRating;
+    }
+
+    if (showMetacriticRating !== prevProps.showMetacriticRating) {
+      state.showMetacriticRating = showMetacriticRating;
     }
 
     if (showRottenTomatoesRating !== prevProps.showRottenTomatoesRating) {
@@ -145,6 +151,7 @@ class DiscoverMoviePosterOptionsModalContent extends Component {
       showTitle,
       showTmdbRating,
       showImdbRating,
+      showMetacriticRating,
       showRottenTomatoesRating,
       showTraktRating,
       includeRecommendations,
@@ -245,6 +252,18 @@ class DiscoverMoviePosterOptionsModalContent extends Component {
             </FormGroup>
 
             <FormGroup>
+              <FormLabel>{translate('ShowMetacriticRating')}</FormLabel>
+
+              <FormInputGroup
+                type={inputTypes.CHECK}
+                name="showMetacriticRating"
+                value={showMetacriticRating}
+                helpText={translate('ShowMetacriticRatingPosterHelpText')}
+                onChange={this.onChangePosterOption}
+              />
+            </FormGroup>
+
+            <FormGroup>
               <FormLabel>{translate('ShowRottenTomatoesRating')}</FormLabel>
 
               <FormInputGroup
@@ -287,6 +306,7 @@ DiscoverMoviePosterOptionsModalContent.propTypes = {
   showTitle: PropTypes.bool.isRequired,
   showTmdbRating: PropTypes.bool.isRequired,
   showImdbRating: PropTypes.bool.isRequired,
+  showMetacriticRating: PropTypes.bool.isRequired,
   showRottenTomatoesRating: PropTypes.bool.isRequired,
   showTraktRating: PropTypes.bool.isRequired,
   includeRecommendations: PropTypes.bool.isRequired,
