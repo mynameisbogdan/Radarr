@@ -6,6 +6,7 @@ import Icon from 'Components/Icon';
 import ImdbRating from 'Components/ImdbRating';
 import IconButton from 'Components/Link/IconButton';
 import SpinnerIconButton from 'Components/Link/SpinnerIconButton';
+import MetacriticRating from 'Components/MetacriticRating';
 import MovieTagList from 'Components/MovieTagList';
 import RottenTomatoRating from 'Components/RottenTomatoRating';
 import RelativeDateCell from 'Components/Table/Cells/RelativeDateCell';
@@ -389,6 +390,16 @@ function MovieIndexRow(props: MovieIndexRowProps) {
           return (
             <VirtualTableRowCell key={name} className={styles[name]}>
               {ratings.imdb ? <ImdbRating ratings={ratings} /> : null}
+            </VirtualTableRowCell>
+          );
+        }
+
+        if (name === 'metacriticRating') {
+          return (
+            <VirtualTableRowCell key={name} className={styles[name]}>
+              {ratings.metacritic ? (
+                <MetacriticRating ratings={ratings} />
+              ) : null}
             </VirtualTableRowCell>
           );
         }
