@@ -171,7 +171,7 @@ export const filterPredicates = {
   tmdbRating: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
-    const rating = ratings.tmdb ? ratings.tmdb.value : 0;
+    const rating = ratings.tmdb?.value ?? -1;
 
     return predicate(rating * 10, filterValue);
   },
@@ -179,7 +179,7 @@ export const filterPredicates = {
   tmdbVotes: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
-    const rating = ratings.tmdb ? ratings.tmdb.votes : 0;
+    const rating = ratings.tmdb?.votes ?? -1;
 
     return predicate(rating, filterValue);
   },
@@ -187,7 +187,7 @@ export const filterPredicates = {
   imdbRating: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
-    const rating = ratings.imdb ? ratings.imdb.value : 0;
+    const rating = ratings.imdb?.value ?? -1;
 
     return predicate(rating, filterValue);
   },
@@ -195,7 +195,7 @@ export const filterPredicates = {
   imdbVotes: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
-    const rating = ratings.imdb ? ratings.imdb.votes : 0;
+    const rating = ratings.imdb?.votes ?? -1;
 
     return predicate(rating, filterValue);
   },
@@ -203,7 +203,7 @@ export const filterPredicates = {
   rottenTomatoesRating: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
-    const rating = ratings.rottenTomatoes ? ratings.rottenTomatoes.value : 0;
+    const rating = ratings.rottenTomatoes?.value ?? -1;
 
     return predicate(rating, filterValue);
   },
@@ -211,7 +211,7 @@ export const filterPredicates = {
   traktRating: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
-    const rating = ratings.trakt ? ratings.trakt.value : 0;
+    const rating = ratings.trakt?.value ?? -1;
 
     return predicate(rating * 10, filterValue);
   },
@@ -219,7 +219,7 @@ export const filterPredicates = {
   traktVotes: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
-    const rating = ratings.trakt ? ratings.trakt.votes : 0;
+    const rating = ratings.trakt?.votes ?? -1;
 
     return predicate(rating, filterValue);
   },
@@ -345,6 +345,46 @@ export const sortPredicates = {
     const { statistics = {} } = item;
 
     return statistics.sizeOnDisk || 0;
+  },
+
+  tmdbRating: function(item, direction) {
+    const value = item.ratings?.tmdb?.value;
+
+    if (value !== undefined) {
+      return value;
+    }
+
+    return direction === sortDirections.DESCENDING ? -1 : Number.MAX_VALUE;
+  },
+
+  imdbRating: function(item, direction) {
+    const value = item.ratings?.imdb?.value;
+
+    if (value !== undefined) {
+      return value;
+    }
+
+    return direction === sortDirections.DESCENDING ? -1 : Number.MAX_VALUE;
+  },
+
+  rottenTomatoesRating: function(item, direction) {
+    const value = item.ratings?.rottenTomatoes?.value;
+
+    if (value !== undefined) {
+      return value;
+    }
+
+    return direction === sortDirections.DESCENDING ? -1 : Number.MAX_VALUE;
+  },
+
+  traktRating: function(item, direction) {
+    const value = item.ratings?.trakt?.value;
+
+    if (value !== undefined) {
+      return value;
+    }
+
+    return direction === sortDirections.DESCENDING ? -1 : Number.MAX_VALUE;
   }
 };
 
