@@ -294,22 +294,6 @@ export const defaultState = {
       }
 
       return Number.MAX_VALUE;
-    },
-
-    tmdbRating: function({ ratings = {} }) {
-      return ratings.tmdb ? ratings.tmdb.value : 0;
-    },
-
-    imdbRating: function({ ratings = {} }) {
-      return ratings.imdb ? ratings.imdb.value : 0;
-    },
-
-    rottenTomatoesRating: function({ ratings = {} }) {
-      return ratings.rottenTomatoes ? ratings.rottenTomatoes.value : -1;
-    },
-
-    traktRating: function({ ratings = {} }) {
-      return ratings.trakt ? ratings.trakt.value : 0;
     }
   },
 
