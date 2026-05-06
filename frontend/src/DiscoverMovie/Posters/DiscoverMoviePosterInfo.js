@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from 'Components/Icon';
 import ImdbRating from 'Components/ImdbRating';
+import MetacriticRating from 'Components/MetacriticRating';
 import RottenTomatoRating from 'Components/RottenTomatoRating';
 import TmdbRating from 'Components/TmdbRating';
 import TraktRating from 'Components/TraktRating';
@@ -29,6 +30,7 @@ function DiscoverMoviePosterInfo(props) {
     movieRuntimeFormat,
     showTmdbRating,
     showImdbRating,
+    showMetacriticRating,
     showRottenTomatoesRating,
     showTraktRating
   } = props;
@@ -129,6 +131,14 @@ function DiscoverMoviePosterInfo(props) {
     );
   }
 
+  if (!showMetacriticRating && sortKey === 'metacriticRating' && !!ratings.metacritic) {
+    return (
+      <div className={styles.info}>
+        <MetacriticRating ratings={ratings} iconSize={12} />
+      </div>
+    );
+  }
+
   if (!showRottenTomatoesRating && sortKey === 'rottenTomatoesRating' && !!ratings.rottenTomatoes) {
     return (
       <div className={styles.info}>
@@ -164,6 +174,7 @@ DiscoverMoviePosterInfo.propTypes = {
   movieRuntimeFormat: PropTypes.string.isRequired,
   showTmdbRating: PropTypes.bool.isRequired,
   showImdbRating: PropTypes.bool.isRequired,
+  showMetacriticRating: PropTypes.bool.isRequired,
   showRottenTomatoesRating: PropTypes.bool.isRequired,
   showTraktRating: PropTypes.bool.isRequired
 };

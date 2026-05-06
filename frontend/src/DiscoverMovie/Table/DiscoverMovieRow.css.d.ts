@@ -17,6 +17,7 @@ interface CssExports {
   'isRecommendation': string;
   'isTrending': string;
   'lists': string;
+  'metacriticRating': string;
   'originalLanguage': string;
   'physicalRelease': string;
   'popularity': string;
