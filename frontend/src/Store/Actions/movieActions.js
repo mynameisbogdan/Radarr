@@ -200,6 +200,14 @@ export const filterPredicates = {
     return predicate(rating, filterValue);
   },
 
+  metacriticRating: function({ ratings = {} }, filterValue, type) {
+    const predicate = filterTypePredicates[type];
+
+    const rating = ratings.metacritic?.value ?? -1;
+
+    return predicate(rating, filterValue);
+  },
+
   rottenTomatoesRating: function({ ratings = {} }, filterValue, type) {
     const predicate = filterTypePredicates[type];
 
@@ -359,6 +367,16 @@ export const sortPredicates = {
 
   imdbRating: function(item, direction) {
     const value = item.ratings?.imdb?.value;
+
+    if (value !== undefined) {
+      return value;
+    }
+
+    return direction === sortDirections.DESCENDING ? -1 : Number.MAX_VALUE;
+  },
+
+  metacriticRating: function(item, direction) {
+    const value = item.ratings?.metacritic?.value;
 
     if (value !== undefined) {
       return value;
