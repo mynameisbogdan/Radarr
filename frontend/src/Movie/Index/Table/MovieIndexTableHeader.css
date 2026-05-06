@@ -89,6 +89,7 @@
 
 .imdbRating,
 .tmdbRating,
+.metacriticRating,
 .rottenTomatoesRating,
 .traktRating {
   composes: headerCell from '~Components/Table/VirtualTableHeaderCell.css';
