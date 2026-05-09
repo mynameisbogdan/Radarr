@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using NzbDrone.Common.Extensions;
+using NzbDrone.Core.CustomFormats;
 using NzbDrone.Core.Download;
 using NzbDrone.Core.HealthCheck;
 using NzbDrone.Core.MediaFiles.Events;
@@ -42,7 +44,7 @@ namespace NzbDrone.Core.Notifications
             _logger = logger;
         }
 
-        private string GetMessage(Movie movie, QualityModel quality)
+        private string GetMessage(Movie movie, QualityModel quality, List<CustomFormat> customFormats = null)
         {
             var qualityString = quality.Quality.ToString();
             var imdbUrl = "https://www.imdb.com/title/" + movie.MovieMetadata.Value.ImdbId + "/";
@@ -52,11 +54,7 @@ namespace NzbDrone.Core.Notifications
                 qualityString += " Proper";
             }
 
-            return string.Format("{0} ({1}) [{2}] {3}",
-                                    movie.Title,
-                                    movie.Year,
-                                    qualityString,
-                                    imdbUrl);
+            return $"{movie.Title} ({movie.Year}) [{qualityString}] [{customFormats?.ConcatToString()}] {imdbUrl}";
         }
 
         private bool ShouldHandleMovie(ProviderDefinition definition, Movie movie)
@@ -97,7 +95,7 @@ namespace NzbDrone.Core.Notifications
         {
             var grabMessage = new GrabMessage
             {
-                Message = GetMessage(message.Movie.Movie, message.Movie.ParsedMovieInfo.Quality),
+                Message = GetMessage(message.Movie.Movie, message.Movie.ParsedMovieInfo.Quality, message.Movie.CustomFormats),
                 Quality = message.Movie.ParsedMovieInfo.Quality,
                 Movie = message.Movie.Movie,
                 RemoteMovie = message.Movie,
@@ -135,7 +133,7 @@ namespace NzbDrone.Core.Notifications
 
             var downloadMessage = new DownloadMessage
             {
-                Message = GetMessage(message.MovieInfo.Movie, message.MovieInfo.Quality),
+                Message = GetMessage(message.MovieInfo.Movie, message.MovieInfo.Quality, message.MovieInfo.CustomFormats),
                 MovieInfo = message.MovieInfo,
                 MovieFile = message.ImportedMovie,
                 Movie = message.MovieInfo.Movie,
@@ -259,7 +257,7 @@ namespace NzbDrone.Core.Notifications
 
             if (movie != null)
             {
-                mess = GetMessage(movie, message.RemoteMovie.ParsedMovieInfo.Quality);
+                mess = GetMessage(movie, message.RemoteMovie.ParsedMovieInfo.Quality, message.RemoteMovie.CustomFormats);
             }
 
             if (mess.IsNullOrWhiteSpace() && message.TrackedDownload.DownloadItem != null)
