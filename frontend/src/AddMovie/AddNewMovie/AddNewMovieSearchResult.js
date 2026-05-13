@@ -4,6 +4,7 @@ import Icon from 'Components/Icon';
 import ImdbRating from 'Components/ImdbRating';
 import Label from 'Components/Label';
 import Link from 'Components/Link/Link';
+import MetadataAttribution from 'Components/MetadataAttribution';
 import TmdbRating from 'Components/TmdbRating';
 import Tooltip from 'Components/Tooltip/Tooltip';
 import { icons, kinds, sizes, tooltipPositions } from 'Helpers/Props';
@@ -295,6 +296,8 @@ class AddNewMovieSearchResult extends Component {
             <div className={styles.overview}>
               {overview}
             </div>
+
+            <MetadataAttribution />
           </div>
         </div>
 
