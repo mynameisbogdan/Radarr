@@ -19,6 +19,7 @@ import InfoLabel from 'Components/InfoLabel';
 import IconButton from 'Components/Link/IconButton';
 import Marquee from 'Components/Marquee';
 import MetacriticRating from 'Components/MetacriticRating';
+import MetadataAttribution from 'Components/MetadataAttribution';
 import MonitorToggleButton from 'Components/MonitorToggleButton';
 import PageContent from 'Components/Page/PageContent';
 import PageContentBody from 'Components/Page/PageContentBody';
@@ -889,6 +890,8 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
                   text={overview}
                 />
               </div>
+
+              <MetadataAttribution />
             </div>
           </div>
         </div>
