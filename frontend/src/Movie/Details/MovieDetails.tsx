@@ -16,7 +16,6 @@ import Icon from 'Components/Icon';
 import ImdbRating from 'Components/ImdbRating';
 import InfoLabel from 'Components/InfoLabel';
 import IconButton from 'Components/Link/IconButton';
-import Marquee from 'Components/Marquee';
 import MetacriticRating from 'Components/MetacriticRating';
 import MetadataAttribution from 'Components/MetadataAttribution';
 import MonitorToggleButton from 'Components/MonitorToggleButton';
@@ -31,7 +30,6 @@ import TmdbRating from 'Components/TmdbRating';
 import Popover from 'Components/Tooltip/Popover';
 import Tooltip from 'Components/Tooltip/Tooltip';
 import TraktRating from 'Components/TraktRating';
-import useMeasure from 'Helpers/Hooks/useMeasure';
 import usePrevious from 'Helpers/Hooks/usePrevious';
 import {
   icons,
@@ -257,7 +255,6 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
   const [isEditMovieModalOpen, setIsEditMovieModalOpen] = useState(false);
   const [isDeleteMovieModalOpen, setIsDeleteMovieModalOpen] = useState(false);
   const [isMovieHistoryModalOpen, setIsMovieHistoryModalOpen] = useState(false);
-  const [titleRef, { width: titleWidth }] = useMeasure();
   const wasRefreshing = usePrevious(isRefreshing);
   const wasRenaming = usePrevious(isRenaming);
 
@@ -551,8 +548,6 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
   const isFetching =
     isMovieFilesFetching || isExtraFilesFetching || isMovieCreditsFetching;
 
-  const marqueeWidth = isSmallScreen ? titleWidth : titleWidth - 150;
-
   const titleWithYear = `${title}${year > 0 ? ` (${year})` : ''}`;
 
   return (
@@ -641,7 +636,7 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
             />
 
             <div className={styles.info}>
-              <div ref={titleRef} className={styles.titleRow}>
+              <div className={styles.titleRow}>
                 <div className={styles.titleContainer}>
                   <div className={styles.toggleMonitoredContainer}>
                     <MonitorToggleButton
@@ -653,8 +648,8 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
                     />
                   </div>
 
-                  <div className={styles.title} style={{ width: marqueeWidth }}>
-                    <Marquee text={title} title={originalTitle} />
+                  <div className={styles.title} title={originalTitle}>
+                    {title}
                   </div>
                 </div>
 
