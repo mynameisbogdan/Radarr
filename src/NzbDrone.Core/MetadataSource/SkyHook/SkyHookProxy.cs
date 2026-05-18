@@ -55,7 +55,7 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
         public HashSet<int> GetChangedMovies(DateTime startTime)
         {
             // Round down to the hour to ensure we cover gap and don't kill cache every call
-            var cacheAdjustedStart = startTime.AddMinutes(-15);
+            var cacheAdjustedStart = startTime.AddHours(-6).AddMinutes(-15);
             var startDate = cacheAdjustedStart.Date.AddHours(cacheAdjustedStart.Hour).ToString("s");
 
             var request = _radarrMetadata.Create()
