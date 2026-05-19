@@ -61,6 +61,7 @@ interface Movie extends ModelBase {
   sortTitle: string;
   overview: string;
   youTubeTrailerId?: string;
+  wikidataId?: string;
   monitored: boolean;
   status: MovieStatus;
   title: string;

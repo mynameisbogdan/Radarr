@@ -64,6 +64,7 @@ class DiscoverMovieRow extends Component {
       tmdbId,
       imdbId,
       youTubeTrailerId,
+      wikidataId,
       title,
       originalLanguage,
       studio,
@@ -423,6 +424,7 @@ class DiscoverMovieRow extends Component {
                           tmdbId={tmdbId}
                           imdbId={imdbId}
                           youTubeTrailerId={youTubeTrailerId}
+                          wikidataId={wikidataId}
                         />
                       }
                     />
@@ -469,6 +471,7 @@ DiscoverMovieRow.propTypes = {
   tmdbId: PropTypes.number.isRequired,
   imdbId: PropTypes.string,
   youTubeTrailerId: PropTypes.string,
+  wikidataId: PropTypes.string,
   status: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   originalLanguage: PropTypes.object.isRequired,

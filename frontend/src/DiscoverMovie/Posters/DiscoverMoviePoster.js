@@ -82,6 +82,7 @@ class DiscoverMoviePoster extends Component {
       tmdbId,
       imdbId,
       youTubeTrailerId,
+      wikidataId,
       title,
       year,
       overview,
@@ -154,6 +155,7 @@ class DiscoverMoviePoster extends Component {
                     tmdbId={tmdbId}
                     imdbId={imdbId}
                     youTubeTrailerId={youTubeTrailerId}
+                    wikidataId={wikidataId}
                   />
                 }
               />
@@ -271,6 +273,7 @@ DiscoverMoviePoster.propTypes = {
   tmdbId: PropTypes.number.isRequired,
   imdbId: PropTypes.string,
   youTubeTrailerId: PropTypes.string,
+  wikidataId: PropTypes.string,
   title: PropTypes.string.isRequired,
   year: PropTypes.number.isRequired,
   overview: PropTypes.string.isRequired,

@@ -29,6 +29,7 @@ namespace Radarr.Api.V3.ImportLists
         public string RemotePoster { get; set; }
         public int Year { get; set; }
         public string YouTubeTrailerId { get; set; }
+        public string WikidataId { get; set; }
         public string Studio { get; set; }
 
         public int Runtime { get; set; }
@@ -83,6 +84,7 @@ namespace Radarr.Api.V3.ImportLists
                 Ratings = model.MovieMetadata.Value.Ratings,
                 Popularity = model.MovieMetadata.Value.Popularity,
                 YouTubeTrailerId = model.MovieMetadata.Value.YouTubeTrailerId,
+                WikidataId = model.MovieMetadata.Value.WikidataId,
                 Collection = new MovieCollection { Title = model.MovieMetadata.Value.CollectionTitle, TmdbId = model.MovieMetadata.Value.CollectionTmdbId },
                 Studio = model.MovieMetadata.Value.Studio
             };
@@ -119,6 +121,7 @@ namespace Radarr.Api.V3.ImportLists
                 Genres = model.MovieMetadata.Value.Genres,
                 Ratings = model.MovieMetadata.Value.Ratings,
                 YouTubeTrailerId = model.MovieMetadata.Value.YouTubeTrailerId,
+                WikidataId = model.MovieMetadata.Value.WikidataId,
                 Popularity = model.MovieMetadata.Value.Popularity,
                 Studio = model.MovieMetadata.Value.Studio,
                 Collection = new MovieCollection { Title = model.MovieMetadata.Value.CollectionTitle, TmdbId = model.MovieMetadata.Value.CollectionTmdbId },

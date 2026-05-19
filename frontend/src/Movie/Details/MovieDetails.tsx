@@ -541,6 +541,7 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
     overview,
     status,
     youTubeTrailerId,
+    wikidataId,
     isAvailable,
     images,
     tags,
@@ -743,6 +744,7 @@ function MovieDetails({ movieId }: MovieDetailsProps) {
                           tmdbId={tmdbId}
                           imdbId={imdbId}
                           youTubeTrailerId={youTubeTrailerId}
+                          wikidataId={wikidataId}
                         />
                       }
                       position={tooltipPositions.BOTTOM}

@@ -73,6 +73,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
     tmdbId,
     imdbId,
     youTubeTrailerId,
+    wikidataId,
     hasFile,
     isAvailable,
     studio,
@@ -189,6 +190,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
                   tmdbId={tmdbId}
                   imdbId={imdbId}
                   youTubeTrailerId={youTubeTrailerId}
+                  wikidataId={wikidataId}
                 />
               }
             />

@@ -59,6 +59,7 @@ class AddNewMovieSearchResult extends Component {
       tmdbId,
       imdbId,
       youTubeTrailerId,
+      wikidataId,
       title,
       titleSlug,
       year,
@@ -272,6 +273,7 @@ class AddNewMovieSearchResult extends Component {
                     tmdbId={tmdbId}
                     imdbId={imdbId}
                     youTubeTrailerId={youTubeTrailerId}
+                    wikidataId={wikidataId}
                   />
                 }
                 canFlip={true}
@@ -317,6 +319,7 @@ AddNewMovieSearchResult.propTypes = {
   tmdbId: PropTypes.number.isRequired,
   imdbId: PropTypes.string,
   youTubeTrailerId: PropTypes.string,
+  wikidataId: PropTypes.string,
   title: PropTypes.string.isRequired,
   titleSlug: PropTypes.string.isRequired,
   year: PropTypes.number.isRequired,

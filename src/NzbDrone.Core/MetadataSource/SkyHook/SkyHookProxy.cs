@@ -314,6 +314,7 @@ namespace NzbDrone.Core.MetadataSource.SkyHook
             }
 
             movie.YouTubeTrailerId = resource.YoutubeTrailerId;
+            movie.WikidataId = resource.WikidataId;
             movie.Studio = resource.Studio;
 
             if (resource.Collection != null)

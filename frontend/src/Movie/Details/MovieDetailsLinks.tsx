@@ -8,11 +8,11 @@ import styles from './MovieDetailsLinks.css';
 
 type MovieDetailsLinksProps = Pick<
   Movie,
-  'tmdbId' | 'imdbId' | 'youTubeTrailerId'
+  'tmdbId' | 'imdbId' | 'youTubeTrailerId' | 'wikidataId'
 >;
 
 function MovieDetailsLinks(props: MovieDetailsLinksProps) {
-  const { tmdbId, imdbId, youTubeTrailerId } = props;
+  const { tmdbId, imdbId, youTubeTrailerId, wikidataId } = props;
 
   return (
     <div className={styles.links}>
@@ -106,6 +106,21 @@ function MovieDetailsLinks(props: MovieDetailsLinksProps) {
             </Label>
           </Link>
         </>
+      ) : null}
+
+      {wikidataId ? (
+        <Link
+          className={styles.link}
+          to={`https://www.wikidata.org/wiki/${wikidataId}`}
+        >
+          <Label
+            className={styles.linkLabel}
+            kind={kinds.INFO}
+            size={sizes.LARGE}
+          >
+            Wikidata
+          </Label>
+        </Link>
       ) : null}
 
       {youTubeTrailerId ? (

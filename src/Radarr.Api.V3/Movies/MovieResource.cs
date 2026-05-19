@@ -50,6 +50,7 @@ namespace Radarr.Api.V3.Movies
         public string RemotePoster { get; set; }
         public int Year { get; set; }
         public string YouTubeTrailerId { get; set; }
+        public string WikidataId { get; set; }
         public string Studio { get; set; }
 
         // View & Edit
@@ -161,6 +162,7 @@ namespace Radarr.Api.V3.Movies
                 Ratings = model.MovieMetadata.Value.Ratings,
                 MovieFile = movieFile,
                 YouTubeTrailerId = model.MovieMetadata.Value.YouTubeTrailerId,
+                WikidataId = model.MovieMetadata.Value.WikidataId,
                 Studio = model.MovieMetadata.Value.Studio,
                 Collection = collection,
                 Popularity = model.MovieMetadata.Value.Popularity,
@@ -196,6 +198,7 @@ namespace Radarr.Api.V3.Movies
                     Website = resource.Website,
                     Ratings = resource.Ratings,
                     YouTubeTrailerId = resource.YouTubeTrailerId,
+                    WikidataId = resource.WikidataId,
                     Studio = resource.Studio,
                     Runtime = resource.Runtime,
                     CleanTitle = resource.CleanTitle,

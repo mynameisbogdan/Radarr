@@ -84,6 +84,7 @@ class DiscoverMovieOverview extends Component {
       tmdbId,
       imdbId,
       youTubeTrailerId,
+      wikidataId,
       title,
       folder,
       year,
@@ -193,6 +194,7 @@ class DiscoverMovieOverview extends Component {
                         tmdbId={tmdbId}
                         imdbId={imdbId}
                         youTubeTrailerId={youTubeTrailerId}
+                        wikidataId={wikidataId}
                       />
                     }
                   />
@@ -294,6 +296,7 @@ DiscoverMovieOverview.propTypes = {
   tmdbId: PropTypes.number.isRequired,
   imdbId: PropTypes.string,
   youTubeTrailerId: PropTypes.string,
+  wikidataId: PropTypes.string,
   title: PropTypes.string.isRequired,
   folder: PropTypes.string.isRequired,
   year: PropTypes.number.isRequired,

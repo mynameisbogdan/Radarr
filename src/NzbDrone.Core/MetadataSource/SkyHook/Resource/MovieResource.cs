@@ -32,6 +32,7 @@ namespace NzbDrone.Core.MetadataSource.SkyHook.Resource
         public Credits Credits { get; set; }
         public string Studio { get; set; }
         public string YoutubeTrailerId { get; set; }
+        public string WikidataId { get; set; }
 
         public List<CertificationResource> Certifications { get; set; }
         public string Status { get; set; }

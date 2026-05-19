@@ -83,6 +83,7 @@ function MovieIndexRow(props: MovieIndexRowProps) {
     hasFile,
     movieFile,
     youTubeTrailerId,
+    wikidataId,
     isSaving = false,
   } = movie;
 
@@ -456,6 +457,7 @@ function MovieIndexRow(props: MovieIndexRowProps) {
                       tmdbId={tmdbId}
                       imdbId={imdbId}
                       youTubeTrailerId={youTubeTrailerId}
+                      wikidataId={wikidataId}
                     />
                   }
                   canFlip={true}

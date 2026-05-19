@@ -79,6 +79,7 @@ function MovieIndexOverview(props: MovieIndexOverviewProps) {
     studio,
     added,
     youTubeTrailerId,
+    wikidataId,
   } = movie;
 
   const { sizeOnDisk = 0 } = statistics;
@@ -191,6 +192,7 @@ function MovieIndexOverview(props: MovieIndexOverviewProps) {
                       tmdbId={tmdbId}
                       imdbId={imdbId}
                       youTubeTrailerId={youTubeTrailerId}
+                      wikidataId={wikidataId}
                     />
                   }
                 />

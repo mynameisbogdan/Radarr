@@ -124,6 +124,7 @@ namespace NzbDrone.Core.Movies
             movieMetadata.PhysicalRelease = movieInfo.PhysicalRelease;
             movieMetadata.DigitalRelease = movieInfo.DigitalRelease;
             movieMetadata.YouTubeTrailerId = movieInfo.YouTubeTrailerId;
+            movieMetadata.WikidataId = movieInfo.WikidataId;
             movieMetadata.Studio = movieInfo.Studio;
             movieMetadata.OriginalTitle = movieInfo.OriginalTitle;
             movieMetadata.CleanOriginalTitle = movieInfo.CleanOriginalTitle;
