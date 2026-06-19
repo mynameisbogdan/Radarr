@@ -87,6 +87,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
     path,
     movieFile,
     ratings,
+    popularity,
     statistics = {} as Statistics,
     certification,
     originalTitle,
@@ -381,6 +382,7 @@ function MovieIndexPoster(props: MovieIndexPosterProps) {
         digitalRelease={digitalRelease}
         releaseDate={releaseDate}
         ratings={ratings}
+        popularity={popularity}
         sizeOnDisk={sizeOnDisk}
         sortKey={sortKey}
         path={path}

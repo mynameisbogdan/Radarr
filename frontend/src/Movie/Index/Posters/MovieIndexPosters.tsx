@@ -221,6 +221,7 @@ export default function MovieIndexPosters(props: MovieIndexPostersProps) {
       case 'sizeOnDisk':
       case 'originalTitle':
       case 'originalLanguage':
+      case 'popularity':
         heights.push(19);
         break;
       case 'qualityProfileId':
