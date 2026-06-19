@@ -8,6 +8,7 @@ import TmdbRating from 'Components/TmdbRating';
 import TraktRating from 'Components/TraktRating';
 import { icons } from 'Helpers/Props';
 import getMovieStatusDetails from 'Movie/getMovieStatusDetails';
+import MoviePopularityIndex from 'Movie/MoviePopularityIndex';
 import formatRuntime from 'Utilities/Date/formatRuntime';
 import getRelativeDate from 'Utilities/Date/getRelativeDate';
 import translate from 'Utilities/String/translate';
@@ -23,6 +24,7 @@ function DiscoverMoviePosterInfo(props) {
     certification,
     runtime,
     ratings,
+    popularity,
     sortKey,
     showRelativeDates,
     shortDateFormat,
@@ -99,6 +101,14 @@ function DiscoverMoviePosterInfo(props) {
     );
   }
 
+  if (sortKey === 'popularity' && popularity) {
+    return (
+      <div className={styles.info}>
+        <MoviePopularityIndex popularity={popularity} />
+      </div>
+    );
+  }
+
   if (sortKey === 'certification' && certification) {
     return (
       <div className={styles.info} title={translate('Certification')}>
@@ -167,6 +177,7 @@ DiscoverMoviePosterInfo.propTypes = {
   physicalRelease: PropTypes.string,
   runtime: PropTypes.number,
   ratings: PropTypes.object.isRequired,
+  popularity: PropTypes.number.isRequired,
   sortKey: PropTypes.string.isRequired,
   showRelativeDates: PropTypes.bool.isRequired,
   shortDateFormat: PropTypes.string.isRequired,
