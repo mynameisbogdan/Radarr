@@ -97,6 +97,7 @@ class DiscoverMoviePoster extends Component {
       showRottenTomatoesRating,
       showTraktRating,
       ratings,
+      popularity,
       isExisting,
       isExcluded,
       isSelected,
@@ -245,6 +246,7 @@ class DiscoverMoviePoster extends Component {
           timeFormat={timeFormat}
           movieRuntimeFormat={movieRuntimeFormat}
           ratings={ratings}
+          popularity={popularity}
           showTmdbRating={showTmdbRating}
           showImdbRating={showImdbRating}
           showMetacriticRating={showMetacriticRating}
@@ -295,6 +297,7 @@ DiscoverMoviePoster.propTypes = {
   showRottenTomatoesRating: PropTypes.bool.isRequired,
   showTraktRating: PropTypes.bool.isRequired,
   ratings: PropTypes.object.isRequired,
+  popularity: PropTypes.number.isRequired,
   showRelativeDates: PropTypes.bool.isRequired,
   shortDateFormat: PropTypes.string.isRequired,
   timeFormat: PropTypes.string.isRequired,
