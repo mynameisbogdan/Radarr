@@ -36,9 +36,18 @@ namespace NzbDrone.Core.Test.ParserTests
 
         [TestCase("Movie.Title.3.2017.720p.TSRip.x264.AAC-Ozlem", false)]
         [TestCase("Movie: Title (2024) TeleSynch 720p | HEVC-FILVOVAN", false)]
-        public void should_parse_ts(string title, bool proper)
+        public void should_parse_ts_quality(string title, bool proper)
         {
             ParseAndVerifyQuality(title, QualitySource.TELESYNC, proper, Resolution.R720p);
+        }
+
+        [TestCase("Movie Title 2026 720p TC x264-GROUP", false)]
+        [TestCase("Movie.Title.2026.720p.TC.DD+7.1.x264-GROUP", false)]
+        [TestCase("Movie.Title.2026.720p.TELECINE.DD+7.1.x264-GROUP", false)]
+        [TestCase("Movie.Title.2026.720p.HDTC.DD+7.1.x264-GROUP", false)]
+        public void should_parse_tc_quality(string title, bool proper)
+        {
+            ParseAndVerifyQuality(title, QualitySource.TELECINE, proper, Resolution.Unknown);
         }
 
         [TestCase("Movie Name 2018 NEW PROPER 720p HD-CAM X264 HQ-CPG", true)]
@@ -238,6 +247,7 @@ namespace NzbDrone.Core.Test.ParserTests
         [TestCase("Movie.Name.2024.German.AC3D.DL.2160p.Hybrid.WEB.DV.HDR10Plus.HEVC-GROUP", false)]
         [TestCase("Movie.Name.2024.German.Atmos.Dubbed.DL.2160p.Hybrid.WEB.DV.HDR10Plus.HEVC-GROUP", false)]
         [TestCase("Movie.Name.2024.German.EAC3D.DL.2160p.Hybrid.WEB.DV.HDR10Plus.HEVC-GROUP", false)]
+        [TestCase("Movie.Name.2026.2160p.WEB-DL.x265.10bit.HDR.DTS-HD.MA [TC-91] [TrueSpec]", false)]
         public void should_parse_webdl2160p_quality(string title, bool proper)
         {
             ParseAndVerifyQuality(title, QualitySource.WEBDL, proper, Resolution.R2160p);
@@ -319,6 +329,7 @@ namespace NzbDrone.Core.Test.ParserTests
         [TestCase("Movie.Title.2014.2160p.BDRip.AAC.7.1.HDR10.x265.10bit-Markll", false)]
         [TestCase("Movie.Title.1956.German.DL.2160p.HDR.UHDBDRip.h266-GROUP", false)]
         [TestCase("Movie.Title.2021.4K.HDR.2160P.UHDBDRip.HEVC-10bit.GROUP", false)]
+        [TestCase("Movie Title (2026) (2160p UHD BluRay x265 10bit DV HDR10+ TrueHD Atmos 7.1 English + French + Spanish r00t) [QxR] [REAL-1080p] [TC-98] [TrueSpec]", false)]
         public void should_parse_bluray2160p_quality(string title, bool proper)
         {
             ParseAndVerifyQuality(title, QualitySource.BLURAY, proper, Resolution.R2160p);
