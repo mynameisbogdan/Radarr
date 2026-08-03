@@ -50,7 +50,9 @@ namespace NzbDrone.Core.MediaFiles
             switch (_configService.FileDate)
             {
                 case FileDateType.Release:
-                    var releaseDate = movie.MovieMetadata.Value.PhysicalRelease ?? movie.MovieMetadata.Value.DigitalRelease;
+                    var releaseDate = new[] { movie.MovieMetadata.Value.DigitalRelease, movie.MovieMetadata.Value.PhysicalRelease }
+                        .Where(x => x.HasValue)
+                        .Min();
 
                     return releaseDate.HasValue && ChangeFileDateToLocalDate(movieFilePath, releaseDate.Value.ToLocalTime());
 
