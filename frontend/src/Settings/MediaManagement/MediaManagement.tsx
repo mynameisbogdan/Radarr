@@ -90,7 +90,7 @@ const fileDateOptions: EnhancedSelectInputValue<string>[] = [
   {
     key: 'release',
     get value() {
-      return translate('PhysicalReleaseDate');
+      return translate('ReleaseDate');
     },
   },
 ];
