@@ -23,8 +23,16 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup dotnet
-      uses: ./.github/actions/setup-dotnet
+    - name: Cache nuget packages
+      uses: actions/cache@v6
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
 
     - name: Setup NuGet registry source
       shell: bash
@@ -41,8 +49,6 @@ runs:
         echo "SDK_PATH=${{ env.DOTNET_ROOT }}/sdk/${DOTNET_VERSION}" >> "$GITHUB_ENV"
         echo "RADARR_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
         echo "BRANCH=${{ inputs.branch }}" >> "$GITHUB_ENV"
-
-        echo "NUGET_PACKAGES=${{ github.workspace }}/.nuget/packages" >> "$GITHUB_ENV"
 
     - name: Enable Extra Platforms In SDK
       if: startsWith(inputs.runtime, 'freebsd')

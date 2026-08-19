@@ -28,8 +28,8 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Setup dotnet
-      uses: ./.github/actions/setup-dotnet
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
 
     - name: Setup Postgres
       if: ${{ inputs.use_postgres }}
