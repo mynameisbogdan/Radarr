@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Results;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using NzbDrone.Core.Messaging.Events;
 using NzbDrone.Core.ThingiProvider;
@@ -21,10 +21,10 @@ namespace NzbDrone.Core.Download
         public DownloadClientFactory(IDownloadClientStatusService downloadClientStatusService,
                                      IDownloadClientRepository providerRepository,
                                      IEnumerable<IDownloadClient> providers,
-                                     IServiceProvider container,
+                                     IServiceScopeFactory serviceScopeFactory,
                                      IEventAggregator eventAggregator,
                                      Logger logger)
-            : base(providerRepository, providers, container, eventAggregator, logger)
+            : base(providerRepository, providers, serviceScopeFactory, eventAggregator, logger)
         {
             _downloadClientStatusService = downloadClientStatusService;
             _logger = logger;

@@ -15,7 +15,7 @@ namespace NzbDrone.Core.ThingiProvider
         where TProvider : IProvider
     {
         private readonly IProviderRepository<TProviderDefinition> _providerRepository;
-        private readonly IServiceProvider _container;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IEventAggregator _eventAggregator;
         private readonly Logger _logger;
 
@@ -23,12 +23,12 @@ namespace NzbDrone.Core.ThingiProvider
 
         protected ProviderFactory(IProviderRepository<TProviderDefinition> providerRepository,
                                   IEnumerable<TProvider> providers,
-                                  IServiceProvider container,
+                                  IServiceScopeFactory serviceScopeFactory,
                                   IEventAggregator eventAggregator,
                                   Logger logger)
         {
             _providerRepository = providerRepository;
-            _container = container;
+            _serviceScopeFactory = serviceScopeFactory;
             _eventAggregator = eventAggregator;
             _providers = providers.ToList();
             _logger = logger;
@@ -155,8 +155,9 @@ namespace NzbDrone.Core.ThingiProvider
 
         public TProvider GetInstance(TProviderDefinition definition)
         {
+            using var scope = _serviceScopeFactory.CreateScope();
             var type = GetImplementation(definition);
-            var instance = (TProvider)_container.GetRequiredService(type);
+            var instance = (TProvider)scope.ServiceProvider.GetRequiredService(type);
             instance.Definition = definition;
             SetProviderCharacteristics(instance, definition);
             return instance;
