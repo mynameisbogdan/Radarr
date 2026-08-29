@@ -29,11 +29,11 @@ namespace Radarr.Http.Validation
 
     public class DuplicateEndpointDetector
     {
-        private readonly IServiceProvider _services;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public DuplicateEndpointDetector(IServiceProvider services)
+        public DuplicateEndpointDetector(IServiceScopeFactory serviceScopeFactory)
         {
-            _services = services;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public Dictionary<string, List<string>> GetDuplicateEndpoints(EndpointDataSource dataSource)
@@ -42,7 +42,8 @@ namespace Radarr.Http.Validation
             var matcherBuilder = typeof(IEndpointSelectorPolicy).Assembly
                 .GetType("Microsoft.AspNetCore.Routing.Matching.DfaMatcherBuilder");
 
-            var rawBuilder = _services.GetRequiredService(matcherBuilder);
+            using var scope = _serviceScopeFactory.CreateScope();
+            var rawBuilder = scope.ServiceProvider.GetRequiredService(matcherBuilder);
             var builder = rawBuilder.ActLike<IDfaMatcherBuilder>();
 
             var endpoints = dataSource.Endpoints;
