@@ -11,6 +11,7 @@ namespace NzbDrone.Common.Composition.Extensions
         {
             return rules.WithMicrosoftDependencyInjectionRules()
                 .WithAutoConcreteTypeResolution()
+                .WithCaptureContainerDisposeStackTrace()
                 .WithDefaultReuse(Reuse.Singleton);
         }
 

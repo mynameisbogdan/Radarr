@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Results;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using NzbDrone.Core.Messaging.Events;
 using NzbDrone.Core.ThingiProvider;
@@ -28,8 +28,8 @@ namespace NzbDrone.Core.Notifications
         private readonly INotificationStatusService _notificationStatusService;
         private readonly Logger _logger;
 
-        public NotificationFactory(INotificationStatusService notificationStatusService, INotificationRepository providerRepository, IEnumerable<INotification> providers, IServiceProvider container, IEventAggregator eventAggregator, Logger logger)
-            : base(providerRepository, providers, container, eventAggregator, logger)
+        public NotificationFactory(INotificationStatusService notificationStatusService, INotificationRepository providerRepository, IEnumerable<INotification> providers, IServiceScopeFactory serviceScopeFactory, IEventAggregator eventAggregator, Logger logger)
+            : base(providerRepository, providers, serviceScopeFactory, eventAggregator, logger)
         {
             _notificationStatusService = notificationStatusService;
             _logger = logger;

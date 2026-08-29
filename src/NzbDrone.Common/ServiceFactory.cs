@@ -17,33 +17,41 @@ namespace NzbDrone.Common
 
     public class ServiceFactory : IServiceFactory
     {
-        private readonly System.IServiceProvider _container;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ServiceFactory(System.IServiceProvider container)
+        public ServiceFactory(IServiceScopeFactory serviceScopeFactory)
         {
-            _container = container;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public T Build<T>()
             where T : class
         {
-            return _container.GetRequiredService<T>();
+            using var scope = _serviceScopeFactory.CreateScope();
+
+            return scope.ServiceProvider.GetRequiredService<T>();
         }
 
         public IEnumerable<T> BuildAll<T>()
             where T : class
         {
-            return _container.GetServices<T>().GroupBy(c => c.GetType().FullName).Select(g => g.First());
+            using var scope = _serviceScopeFactory.CreateScope();
+
+            return scope.ServiceProvider.GetServices<T>().GroupBy(c => c.GetType().FullName).Select(g => g.First());
         }
 
         public object Build(Type contract)
         {
-            return _container.GetRequiredService(contract);
+            using var scope = _serviceScopeFactory.CreateScope();
+
+            return scope.ServiceProvider.GetRequiredService(contract);
         }
 
         public IEnumerable<Type> GetImplementations(Type contract)
         {
-            return _container.GetServices(contract).Select(x => x.GetType());
+            using var scope = _serviceScopeFactory.CreateScope();
+
+            return scope.ServiceProvider.GetServices(contract).Select(x => x.GetType());
         }
     }
 }
