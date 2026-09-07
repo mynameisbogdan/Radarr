@@ -17,7 +17,7 @@ public class MovieFolderController : Controller
         _fileNameBuilder = fileNameBuilder;
     }
 
-    [HttpGet("{id}/folder")]
+    [HttpGet("{id:int}/folder")]
     [Produces("application/json")]
     public object GetFolder([FromRoute] int id)
     {

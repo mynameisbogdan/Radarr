@@ -51,6 +51,7 @@ namespace Radarr.Api.V3.AutoTagging
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<AutoTaggingResource> Create([FromBody] AutoTaggingResource autoTagResource)
         {
             var model = autoTagResource.ToModel(_specifications);
@@ -62,6 +63,7 @@ namespace Radarr.Api.V3.AutoTagging
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<AutoTaggingResource> Update([FromBody] AutoTaggingResource resource)
         {
             var model = resource.ToModel(_specifications);
@@ -87,7 +89,8 @@ namespace Radarr.Api.V3.AutoTagging
         }
 
         [HttpGet("schema")]
-        public object GetTemplates()
+        [Produces("application/json")]
+        public List<AutoTaggingSpecificationSchema> GetTemplates()
         {
             var schema = _specifications.OrderBy(x => x.Order).Select(x => x.ToSchema()).ToList();
 

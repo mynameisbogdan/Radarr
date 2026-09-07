@@ -47,6 +47,7 @@ namespace Radarr.Http.REST
         }
 
         [RestGetById]
+        [Produces("application/json")]
         public virtual ActionResult<TResource> GetResourceByIdWithErrorHandler(int id)
         {
             try

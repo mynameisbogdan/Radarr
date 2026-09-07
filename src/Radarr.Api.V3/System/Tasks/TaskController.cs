@@ -23,6 +23,7 @@ namespace Radarr.Api.V3.System.Tasks
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<TaskResource> GetAll()
         {
             return _taskManager.GetAll()

@@ -53,6 +53,7 @@ namespace Radarr.Api.V3.RemotePathMappings
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<RemotePathMappingResource> CreateMapping([FromBody] RemotePathMappingResource resource)
         {
             var model = resource.ToModel();
@@ -61,6 +62,7 @@ namespace Radarr.Api.V3.RemotePathMappings
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<RemotePathMappingResource> GetMappings()
         {
             return _remotePathMappingService.All().ToResource();
@@ -73,6 +75,8 @@ namespace Radarr.Api.V3.RemotePathMappings
         }
 
         [RestPutById]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<RemotePathMappingResource> UpdateMapping([FromBody] RemotePathMappingResource resource)
         {
             var mapping = resource.ToModel();

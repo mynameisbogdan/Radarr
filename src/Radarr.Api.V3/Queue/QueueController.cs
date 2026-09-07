@@ -94,6 +94,7 @@ namespace Radarr.Api.V3.Queue
         }
 
         [HttpDelete("bulk")]
+        [Consumes("application/json")]
         public object RemoveMany([FromBody] QueueBulkResource resource, [FromQuery] bool removeFromClient = true, [FromQuery] bool blocklist = false, [FromQuery] bool skipRedownload = false, [FromQuery] bool changeCategory = false)
         {
             var trackedDownloadIds = new List<string>();

@@ -30,6 +30,7 @@ namespace Radarr.Api.V3.Parse
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public ParseResource Parse(string title)
         {
             if (title.IsNullOrWhiteSpace())

@@ -57,6 +57,7 @@ namespace Radarr.Api.V3.Blocklist
         }
 
         [HttpGet("movie")]
+        [Produces("application/json")]
         public List<BlocklistResource> GetMovieBlocklist(int movieId)
         {
             return _blocklistService.GetByMovieId(movieId).Select(h => BlocklistResourceMapper.MapToResource(h, _formatCalculator)).ToList();
@@ -69,7 +70,7 @@ namespace Radarr.Api.V3.Blocklist
         }
 
         [HttpDelete("bulk")]
-        [Produces("application/json")]
+        [Consumes("application/json")]
         public object Remove([FromBody] BlocklistBulkResource resource)
         {
             _blocklistService.Delete(resource.Ids);

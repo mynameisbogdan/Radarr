@@ -38,6 +38,7 @@ namespace Radarr.Api.V3.Queue
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<QueueResource> GetQueue(int? movieId, bool includeMovie = false)
         {
             var queue = _queueService.GetQueue();

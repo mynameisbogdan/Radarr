@@ -34,6 +34,7 @@ namespace Radarr.Api.V3.Config
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public virtual ActionResult<TResource> SaveConfig([FromBody] TResource resource)
         {
             var dictionary = resource.GetType()

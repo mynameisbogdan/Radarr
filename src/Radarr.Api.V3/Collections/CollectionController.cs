@@ -90,6 +90,7 @@ namespace Radarr.Api.V3.Collections
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<CollectionResource> UpdateCollection([FromBody] CollectionResource collectionResource)
         {
             var collection = _collectionService.GetCollection(collectionResource.Id);
@@ -103,6 +104,7 @@ namespace Radarr.Api.V3.Collections
 
         [HttpPut]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult UpdateCollections([FromBody] CollectionUpdateResource resource)
         {
             var collectionsToUpdate = _collectionService.GetCollections(resource.CollectionIds).ToList();

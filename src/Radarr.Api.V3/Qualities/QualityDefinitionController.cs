@@ -30,6 +30,8 @@ namespace Radarr.Api.V3.Qualities
         }
 
         [RestPutById]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<QualityDefinitionResource> Update([FromBody] QualityDefinitionResource resource)
         {
             var model = resource.ToModel();
@@ -43,24 +45,27 @@ namespace Radarr.Api.V3.Qualities
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<QualityDefinitionResource> GetAll()
         {
             return _qualityDefinitionService.All().ToResource();
         }
 
         [HttpPut("update")]
-        public object UpdateMany([FromBody] List<QualityDefinitionResource> resource)
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        public ActionResult<List<QualityDefinitionResource>> UpdateMany([FromBody] List<QualityDefinitionResource> resource)
         {
             // Read from request
             var qualityDefinitions = resource.ToModel().ToList();
 
             _qualityDefinitionService.UpdateMany(qualityDefinitions);
 
-            return Accepted(_qualityDefinitionService.All()
-                .ToResource());
+            return Accepted(_qualityDefinitionService.All().ToResource());
         }
 
         [HttpGet("limits")]
+        [Produces("application/json")]
         public ActionResult<QualityDefinitionLimitsResource> GetLimits()
         {
             return Ok(new QualityDefinitionLimitsResource(

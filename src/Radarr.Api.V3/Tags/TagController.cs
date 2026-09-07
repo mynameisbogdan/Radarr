@@ -38,6 +38,7 @@ namespace Radarr.Api.V3.Tags
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<TagResource> GetAll()
         {
             return _tagService.All().ToResource();
@@ -45,6 +46,7 @@ namespace Radarr.Api.V3.Tags
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<TagResource> Create([FromBody] TagResource resource)
         {
             return Created(_tagService.Add(resource.ToModel()).Id);
@@ -52,6 +54,7 @@ namespace Radarr.Api.V3.Tags
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<TagResource> Update([FromBody] TagResource resource)
         {
             _tagService.Update(resource.ToModel());

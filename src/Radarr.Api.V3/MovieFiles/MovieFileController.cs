@@ -84,6 +84,7 @@ namespace Radarr.Api.V3.MovieFiles
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<MovieFileResource> SetMovieFile([FromBody] MovieFileResource movieFileResource)
         {
             var movieFile = _mediaFileService.GetMovie(movieFileResource.Id);
@@ -108,7 +109,8 @@ namespace Radarr.Api.V3.MovieFiles
         [Obsolete("Use bulk endpoint instead")]
         [HttpPut("editor")]
         [Consumes("application/json")]
-        public object SetMovieFile([FromBody] MovieFileListResource resource)
+        [Produces("application/json")]
+        public ActionResult<List<MovieFileResource>> SetMovieFile([FromBody] MovieFileListResource resource)
         {
             var movieFiles = _mediaFileService.GetMovies(resource.MovieFileIds);
 
@@ -190,7 +192,8 @@ namespace Radarr.Api.V3.MovieFiles
 
         [HttpPut("bulk")]
         [Consumes("application/json")]
-        public object SetPropertiesBulk([FromBody] List<MovieFileResource> resources)
+        [Produces("application/json")]
+        public ActionResult<List<MovieFileResource>> SetPropertiesBulk([FromBody] List<MovieFileResource> resources)
         {
             var movieFiles = _mediaFileService.GetMovies(resources.Select(r => r.Id));
 

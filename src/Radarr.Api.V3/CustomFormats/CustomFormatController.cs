@@ -55,6 +55,7 @@ namespace Radarr.Api.V3.CustomFormats
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<CustomFormatResource> Create([FromBody] CustomFormatResource customFormatResource)
         {
             var model = customFormatResource.ToModel(_specifications);
@@ -66,6 +67,7 @@ namespace Radarr.Api.V3.CustomFormats
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<CustomFormatResource> Update([FromBody] CustomFormatResource resource)
         {
             var model = resource.ToModel(_specifications);
@@ -115,7 +117,8 @@ namespace Radarr.Api.V3.CustomFormats
         }
 
         [HttpGet("schema")]
-        public object GetTemplates()
+        [Produces("application/json")]
+        public List<CustomFormatSpecificationSchema> GetTemplates()
         {
             var schema = _specifications.OrderBy(x => x.Order).Select(x => x.ToSchema()).ToList();
 

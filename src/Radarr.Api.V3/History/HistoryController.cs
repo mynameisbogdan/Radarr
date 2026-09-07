@@ -107,7 +107,7 @@ namespace Radarr.Api.V3.History
             return _historyService.GetByMovieId(movieId, eventType).Select(h => MapToResource(h, includeMovie)).ToList();
         }
 
-        [HttpPost("failed/{id}")]
+        [HttpPost("failed/{id:int}")]
         public object MarkAsFailed([FromRoute] int id)
         {
             _failedDownloadService.MarkAsFailed(id);

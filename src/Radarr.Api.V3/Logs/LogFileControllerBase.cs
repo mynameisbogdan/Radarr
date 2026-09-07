@@ -26,6 +26,7 @@ namespace Radarr.Api.V3.Logs
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<LogFileResource> GetLogFilesResponse()
         {
             var result = new List<LogFileResource>();
@@ -51,7 +52,8 @@ namespace Radarr.Api.V3.Logs
         }
 
         [HttpGet(@"{filename:regex([[-.a-zA-Z0-9]]+?\.txt)}")]
-        public IActionResult GetLogFileResponse(string filename)
+        [Produces("text/plain")]
+        public ActionResult<PhysicalFileResult> GetLogFileResponse(string filename)
         {
             LogManager.Flush();
 

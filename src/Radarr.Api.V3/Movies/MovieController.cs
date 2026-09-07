@@ -112,6 +112,7 @@ namespace Radarr.Api.V3.Movies
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<MovieResource> AllMovie(int? tmdbId, bool excludeLocalCovers = false, int? languageId = null)
         {
             var moviesResources = new List<MovieResource>();

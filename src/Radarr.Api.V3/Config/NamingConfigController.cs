@@ -36,6 +36,7 @@ namespace Radarr.Api.V3.Config
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public NamingConfigResource GetNamingConfig()
         {
             var nameSpec = _namingConfigService.GetConfig();
@@ -45,6 +46,8 @@ namespace Radarr.Api.V3.Config
         }
 
         [RestPutById]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<NamingConfigResource> UpdateNamingConfig([FromBody] NamingConfigResource resource)
         {
             var nameSpec = resource.ToModel();
@@ -56,7 +59,8 @@ namespace Radarr.Api.V3.Config
         }
 
         [HttpGet("examples")]
-        public object GetExamples([FromQuery]NamingConfigResource config)
+        [Produces("application/json")]
+        public NamingExampleResource GetExamples([FromQuery] NamingConfigResource config)
         {
             if (config.Id == 0)
             {

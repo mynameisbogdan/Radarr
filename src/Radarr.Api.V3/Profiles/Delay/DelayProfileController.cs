@@ -35,6 +35,7 @@ namespace Radarr.Api.V3.Profiles.Delay
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<DelayProfileResource> Create([FromBody] DelayProfileResource resource)
         {
             var model = resource.ToModel();
@@ -56,6 +57,7 @@ namespace Radarr.Api.V3.Profiles.Delay
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<DelayProfileResource> Update([FromBody] DelayProfileResource resource)
         {
             var model = resource.ToModel();
@@ -69,12 +71,14 @@ namespace Radarr.Api.V3.Profiles.Delay
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<DelayProfileResource> GetAll()
         {
             return _delayProfileService.All().ToResource();
         }
 
-        [HttpPut("reorder/{id}")]
+        [HttpPut("reorder/{id:int}")]
+        [Produces("application/json")]
         public List<DelayProfileResource> Reorder([FromRoute] int id, [FromQuery] int? after)
         {
             ValidateId(id);

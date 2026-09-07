@@ -44,6 +44,8 @@ namespace Radarr.Api.V3.Movies
         }
 
         [HttpPut]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public IActionResult SaveAll([FromBody] MovieEditorResource resource)
         {
             var moviesToUpdate = _movieService.GetMovies(resource.MovieIds);
@@ -136,6 +138,7 @@ namespace Radarr.Api.V3.Movies
         }
 
         [HttpDelete]
+        [Consumes("application/json")]
         public object DeleteMovies([FromBody] MovieEditorResource resource)
         {
             _movieService.DeleteMovies(resource.MovieIds, resource.DeleteFiles, resource.AddImportExclusion);

@@ -50,6 +50,7 @@ namespace Radarr.Api.V3.RootFolders
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<RootFolderResource> CreateRootFolder([FromBody] RootFolderResource rootFolderResource)
         {
             var model = rootFolderResource.ToModel();
@@ -58,6 +59,7 @@ namespace Radarr.Api.V3.RootFolders
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<RootFolderResource> GetRootFolders()
         {
             return _rootFolderService.AllWithUnmappedFolders().ToResource();

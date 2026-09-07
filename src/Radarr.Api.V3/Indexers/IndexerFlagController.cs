@@ -12,6 +12,7 @@ namespace Radarr.Api.V3.Indexers
     public class IndexerFlagController : Controller
     {
         [HttpGet]
+        [Produces("application/json")]
         public List<IndexerFlagResource> GetAll()
         {
             var type = typeof(IndexerFlags);

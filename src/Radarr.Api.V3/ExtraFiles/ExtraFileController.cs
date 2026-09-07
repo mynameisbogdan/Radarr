@@ -24,6 +24,7 @@ namespace Radarr.Api.V3.ExtraFiles
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<ExtraFileResource> GetFiles(int movieId)
         {
             var extraFiles = new List<ExtraFileResource>();

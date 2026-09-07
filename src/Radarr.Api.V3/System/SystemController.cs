@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,7 @@ namespace Radarr.Api.V3.System
         }
 
         [HttpGet("status")]
+        [Produces("application/json")]
         public SystemResource GetStatus()
         {
             return new SystemResource
@@ -94,7 +96,8 @@ namespace Radarr.Api.V3.System
         }
 
         [HttpGet("routes")]
-        public IActionResult GetRoutes()
+        [Produces("text/plain")]
+        public ActionResult<string> GetRoutes()
         {
             using (var sw = new StringWriter())
             {
@@ -105,7 +108,8 @@ namespace Radarr.Api.V3.System
         }
 
         [HttpGet("routes/duplicate")]
-        public object DuplicateRoutes()
+        [Produces("application/json")]
+        public Dictionary<string, List<string>> DuplicateRoutes()
         {
             return _detector.GetDuplicateEndpoints(_endpointData);
         }

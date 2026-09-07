@@ -17,6 +17,7 @@ namespace Radarr.Api.V3.Movies
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<RenameMovieResource> GetMovies([FromQuery(Name = "movieId")] List<int> movieIds)
         {
             if (movieIds is not { Count: not 0 })

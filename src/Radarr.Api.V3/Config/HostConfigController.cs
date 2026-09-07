@@ -109,6 +109,7 @@ namespace Radarr.Api.V3.Config
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public HostConfigResource GetHostConfig()
         {
             var resource = _configFileProvider.ToResource(_configService);
@@ -124,6 +125,8 @@ namespace Radarr.Api.V3.Config
         }
 
         [RestPutById]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<HostConfigResource> SaveHostConfig([FromBody] HostConfigResource resource)
         {
             resource.TrustedNetworks = IPNetworkParser.NormalizeList(resource.TrustedNetworks);

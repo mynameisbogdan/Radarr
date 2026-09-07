@@ -64,6 +64,7 @@ namespace Radarr.Api.V3.ImportLists
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<ImportListExclusionResource> AddImportListExclusion([FromBody] ImportListExclusionResource resource)
         {
             var importListExclusion = _importListExclusionService.Add(resource.ToModel());
@@ -73,6 +74,7 @@ namespace Radarr.Api.V3.ImportLists
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<ImportListExclusionResource> UpdateImportListExclusion([FromBody] ImportListExclusionResource resource)
         {
             _importListExclusionService.Update(resource.ToModel());
@@ -80,7 +82,9 @@ namespace Radarr.Api.V3.ImportLists
         }
 
         [HttpPost("bulk")]
-        public object AddImportListExclusions([FromBody] List<ImportListExclusionResource> resources)
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        public List<ImportListExclusionResource> AddImportListExclusions([FromBody] List<ImportListExclusionResource> resources)
         {
             var importListExclusions = _importListExclusionService.Add(resources.ToModel());
 
@@ -94,7 +98,7 @@ namespace Radarr.Api.V3.ImportLists
         }
 
         [HttpDelete("bulk")]
-        [Produces("application/json")]
+        [Consumes("application/json")]
         public object DeleteImportListExclusions([FromBody] ImportListExclusionBulkResource resource)
         {
             _importListExclusionService.Delete(resource.Ids.ToList());

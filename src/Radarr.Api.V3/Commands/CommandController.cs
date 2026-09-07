@@ -79,6 +79,7 @@ namespace Radarr.Api.V3.Commands
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<CommandResource> GetStartedCommands()
         {
             return _commandQueueManager.All()

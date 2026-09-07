@@ -25,6 +25,7 @@ namespace Radarr.Api.V3.Movies
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<AlternativeTitleResource> GetAltTitles(int? movieId, int? movieMetadataId)
         {
             if (movieMetadataId.HasValue)

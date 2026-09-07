@@ -15,6 +15,7 @@ namespace Radarr.Api.V3.Profiles.Quality
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public QualityProfileResource GetSchema()
         {
             var qualityProfile = _qualityProfileService.GetDefaultProfile(string.Empty);

@@ -48,6 +48,7 @@ namespace Radarr.Api.V3.Profiles.Quality
 
         [RestPostById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<QualityProfileResource> Create([FromBody] QualityProfileResource resource)
         {
             var model = resource.ToModel();
@@ -63,6 +64,7 @@ namespace Radarr.Api.V3.Profiles.Quality
 
         [RestPutById]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<QualityProfileResource> Update([FromBody] QualityProfileResource resource)
         {
             var model = resource.ToModel();
@@ -78,6 +80,7 @@ namespace Radarr.Api.V3.Profiles.Quality
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<QualityProfileResource> GetAll()
         {
             return _qualityProfileService.All().ToResource();

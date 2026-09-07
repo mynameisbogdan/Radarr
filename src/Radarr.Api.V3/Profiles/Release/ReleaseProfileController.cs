@@ -47,6 +47,8 @@ namespace Radarr.Api.V3.Profiles.Release
         }
 
         [RestPostById]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<ReleaseProfileResource> Create([FromBody] ReleaseProfileResource resource)
         {
             var model = resource.ToModel();
@@ -61,6 +63,8 @@ namespace Radarr.Api.V3.Profiles.Release
         }
 
         [RestPutById]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public ActionResult<ReleaseProfileResource> Update([FromBody] ReleaseProfileResource resource)
         {
             var model = resource.ToModel();
@@ -76,6 +80,7 @@ namespace Radarr.Api.V3.Profiles.Release
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<ReleaseProfileResource> GetAll()
         {
             return _profileService.All().ToResource();

@@ -22,6 +22,7 @@ namespace Radarr.Api.V3.Profiles.Languages
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public List<LanguageResource> GetAll()
         {
             var languageResources = Language.All.Select(l => new LanguageResource

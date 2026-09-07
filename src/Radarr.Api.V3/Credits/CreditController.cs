@@ -28,7 +28,8 @@ namespace Radarr.Api.V3.Credits
         }
 
         [HttpGet]
-        public object GetCredits(int? movieId, int? movieMetadataId)
+        [Produces("application/json")]
+        public IEnumerable<CreditResource> GetCredits(int? movieId, int? movieMetadataId)
         {
             if (movieMetadataId.HasValue)
             {
