@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using NLog;
+using NzbDrone.Common.Cache;
 using NzbDrone.Common.Disk;
 using NzbDrone.Common.EnvironmentInfo;
 using NzbDrone.Common.Extensions;
@@ -35,6 +36,7 @@ namespace NzbDrone.Core.MediaCover
         private readonly IEventAggregator _eventAggregator;
         private readonly Logger _logger;
 
+        private readonly ICached<bool> _coverExistsCache;
         private readonly string _coverRootFolder;
 
         // ImageSharp is slow on ARM (no hardware acceleration on mono yet)
@@ -49,6 +51,7 @@ namespace NzbDrone.Core.MediaCover
                                  ICoverExistsSpecification coverExistsSpecification,
                                  IConfigFileProvider configFileProvider,
                                  IEventAggregator eventAggregator,
+                                 ICacheManager cacheManager,
                                  Logger logger)
         {
             _mediaCoverProxy = mediaCoverProxy;
@@ -60,6 +63,7 @@ namespace NzbDrone.Core.MediaCover
             _eventAggregator = eventAggregator;
             _logger = logger;
 
+            _coverExistsCache = cacheManager.GetCache<bool>(GetType(), "coverExists");
             _coverRootFolder = appFolderInfo.GetMediaCoverPath();
         }
 
@@ -91,11 +95,26 @@ namespace NzbDrone.Core.MediaCover
 
                     mediaCover.Url = _configFileProvider.UrlBase + @"/MediaCover/" + movieId + "/" + mediaCover.CoverType.ToString().ToLowerInvariant() + GetExtension(mediaCover.CoverType);
 
-                    if (mediaCover.RemoteUrl.IsNotNullOrWhiteSpace())
+                    if (mediaCover.RemoteUrl.IsNotNullOrWhiteSpace() && CoverExists(movieId, mediaCover.CoverType))
                     {
                         mediaCover.Url += "?h=" + mediaCover.RemoteUrl.SHA256Hash()[..20];
                     }
                 }
+            }
+        }
+
+        private bool CoverExists(int movieId, MediaCoverTypes coverType)
+        {
+            var filePath = GetCoverPath(movieId, coverType);
+
+            return _coverExistsCache.Get(filePath, () => _diskProvider.FileExists(filePath));
+        }
+
+        private void RemoveCoverExistsCache(Movie movie)
+        {
+            foreach (var cover in movie.MovieMetadata.Value.Images)
+            {
+                _coverExistsCache.Remove(GetCoverPath(movie.Id, cover.CoverType));
             }
         }
 
@@ -128,6 +147,8 @@ namespace NzbDrone.Core.MediaCover
                         DownloadCover(movie, cover);
                         updated = true;
                     }
+
+                    _coverExistsCache.Set(fileName, true);
                 }
                 catch (HttpException e)
                 {
@@ -235,6 +256,8 @@ namespace NzbDrone.Core.MediaCover
         {
             foreach (var movie in message.Movies)
             {
+                RemoveCoverExistsCache(movie);
+
                 var path = GetMovieCoverPath(movie.Id);
                 if (_diskProvider.FolderExists(path))
                 {
