@@ -28,7 +28,7 @@ export const defaultState = {
   view: 'posters',
 
   posterOptions: {
-    detailedProgressBar: false,
+    detailedProgressBar: true,
     size: 'large',
     showTitle: false,
     showMonitored: true,
@@ -47,7 +47,7 @@ export const defaultState = {
   },
 
   overviewOptions: {
-    detailedProgressBar: false,
+    detailedProgressBar: true,
     size: 'medium',
     showMonitored: true,
     showStudio: true,
