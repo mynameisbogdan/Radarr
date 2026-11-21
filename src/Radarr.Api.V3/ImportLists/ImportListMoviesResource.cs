@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using NzbDrone.Core.ImportLists.ImportListMovies;
 using NzbDrone.Core.Languages;
 using NzbDrone.Core.MediaCover;
@@ -21,9 +22,16 @@ namespace Radarr.Api.V3.ImportLists
         public Language OriginalLanguage { get; set; }
         public MovieStatusType Status { get; set; }
         public string Overview { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? InCinemas { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? PhysicalRelease { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? DigitalRelease { get; set; }
+
         public List<MediaCover> Images { get; set; }
         public string Website { get; set; }
         public string RemotePoster { get; set; }

@@ -38,10 +38,19 @@ namespace Radarr.Api.V3.Movies
         public long? SizeOnDisk { get; set; }
         public MovieStatusType Status { get; set; }
         public string Overview { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? InCinemas { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? PhysicalRelease { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? DigitalRelease { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? ReleaseDate { get; set; }
+
         public string PhysicalReleaseNote { get; set; }
         public List<MediaCover> Images { get; set; }
         public string Website { get; set; }
